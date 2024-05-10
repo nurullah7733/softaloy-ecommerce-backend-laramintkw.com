@@ -52,9 +52,11 @@ const limiter = rateLimit({ windowMs: 15 * 60 * 100, max: 3000 });
 app.use(limiter);
 
 // ******* its for cloud database *******
-let URI =
-  "mongodb+srv://<username>:<password>@cluster0.y610b.mongodb.net/lara-mint-ecommerce?retryWrites=true&w=majority";
-let option = { user: "nur", pass: "nur" };
+let URI = process.env.DATABASE_URL;
+let option = {
+  user: process.env.DATABASE_USER,
+  pass: process.env.DATABASE_PASS,
+};
 
 // let OPTION = {
 //   user: process.env.DATABASE_USER,
