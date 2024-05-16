@@ -37,11 +37,11 @@ exports.createProduct = async (req, res) => {
     req.body.finalPrice = (
       (Number(req.body.price) * (100 - req.body.discount)) /
       100
-    ).toFixed();
+    ).toFixed(2);
     req.body.saveAmount = (
       Number(req.body.price) *
       (req.body.discount / 100)
-    ).toFixed();
+    ).toFixed(2);
   }
   let result = await createServiceWithImage(
     req,
@@ -61,7 +61,7 @@ exports.listProduct = async (req, res) => {
     { color: searchRgx },
     { "category.name": searchRgx },
     { "subCategory.name": searchRgx },
-    { "brand.name": searchRgx },
+    { "subsubcategories.name": searchRgx },
   ];
   let joinStage1 = {
     $lookup: {
@@ -81,10 +81,10 @@ exports.listProduct = async (req, res) => {
   };
   let joinStage3 = {
     $lookup: {
-      from: "brands",
-      localField: "brandId",
+      from: "subsubcategories",
+      localField: "subCategory.subSubCategoryId",
       foreignField: "_id",
-      as: "brand",
+      as: "subsubcategories",
     },
   };
   let result = await listThreeJoinServiceSortByCreateAt(
@@ -103,10 +103,12 @@ exports.listProductForGlobal = async (req, res) => {
   let searchArray = [
     { name: searchRgx },
     { slug: searchRgx },
-    { color: searchRgx },
+    { description: searchRgx },
+    { features: searchRgx },
+    { ingredients: searchRgx },
     { "category.name": searchRgx },
     { "subCategory.name": searchRgx },
-    { "brand.name": searchRgx },
+    { "subsubcategories.name": searchRgx },
   ];
 
   let joinStage1 = {
@@ -127,10 +129,10 @@ exports.listProductForGlobal = async (req, res) => {
   };
   let joinStage3 = {
     $lookup: {
-      from: "brands",
-      localField: "brandId",
+      from: "subsubcategories",
+      localField: "subCategory.subSubCategoryId",
       foreignField: "_id",
-      as: "brand",
+      as: "subsubcategories",
     },
   };
   let result = await listThreeJoinServiceForGlobal(
@@ -152,7 +154,7 @@ exports.bestSalesProductForGlobal = async (req, res) => {
     { color: searchRgx },
     { "category.name": searchRgx },
     { "subCategory.name": searchRgx },
-    { "brand.name": searchRgx },
+    { "subsubcategories.name": searchRgx },
   ];
 
   let joinStage1 = {
@@ -173,10 +175,10 @@ exports.bestSalesProductForGlobal = async (req, res) => {
   };
   let joinStage3 = {
     $lookup: {
-      from: "brands",
-      localField: "brandId",
+      from: "subsubcategories",
+      localField: "subCategory.subSubCategoryId",
       foreignField: "_id",
-      as: "brand",
+      as: "subsubcategories",
     },
   };
   let result = await listThreeJoinServiceBestSalesForGlobal(
@@ -189,10 +191,7 @@ exports.bestSalesProductForGlobal = async (req, res) => {
   );
   return res.status(200).json(result);
 };
-exports.dropdownListProduct = async (req, res) => {
-  let result = await dropdownListService(req, ProductModel);
-  return res.status(200).json(result);
-};
+
 exports.getProductDetailsById = async (req, res) => {
   let joinStage1 = {
     $lookup: {
@@ -212,27 +211,19 @@ exports.getProductDetailsById = async (req, res) => {
   };
   let joinStage3 = {
     $lookup: {
-      from: "brands",
-      localField: "brandId",
+      from: "subsubcategories",
+      localField: "subCategory.subSubCategoryId",
       foreignField: "_id",
-      as: "brand",
+      as: "subsubcategories",
     },
   };
-  let joinStage4 = {
-    $lookup: {
-      from: "users",
-      localField: "ratings.author",
-      foreignField: "_id",
-      as: "ratingsUser",
-    },
-  };
+
   let result = await getDetailsByIdThreeJoinService(
     req,
     ProductModel,
     joinStage1,
     joinStage2,
-    joinStage3,
-    joinStage4
+    joinStage3
   );
   return res.status(200).json(result);
 };
@@ -251,18 +242,17 @@ exports.updateProduct = async (req, res) => {
     req.body.finalPrice = (
       (req.body.price * (100 - req.body.discount)) /
       100
-    ).toFixed();
-    req.body.saveAmount = (
-      req.body.price *
-      (req.body.discount / 100)
-    ).toFixed();
+    ).toFixed(2);
+    req.body.saveAmount = (req.body.price * (req.body.discount / 100)).toFixed(
+      2
+    );
   }
   let result = await updateServiceWithImg(
     req,
     ProductModel,
     "products",
-    300,
-    300
+    400,
+    400
   );
   return res.status(200).json(result);
 };
@@ -397,20 +387,12 @@ exports.relatedProducts = async (req, res) => {
       as: "subCategory",
     },
   };
-  let joinStage3 = {
-    $lookup: {
-      from: "brands",
-      localField: "brandId",
-      foreignField: "_id",
-      as: "brand",
-    },
-  };
+
   let result = await RelatedProductsSearchSercice(
     req,
     ProductModel,
     joinStage1,
-    joinStage2,
-    joinStage3
+    joinStage2
   );
   return res.status(200).json(result);
 };

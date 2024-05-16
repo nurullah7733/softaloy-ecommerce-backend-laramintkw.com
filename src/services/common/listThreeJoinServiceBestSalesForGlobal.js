@@ -12,7 +12,7 @@ const listThreeJoinServiceBestSalesForGlobal = async (
   let discount = Number(Request.query.discount);
   let category = Request.query.category;
   let subcategory = Request.query.subcategory;
-  let brand = Request.query.brand;
+  let subsubcategory = Request.query.subsubcategory;
 
   let pageNo = Number(Request.params.pageNo);
   let perPage = Number(Request.params.perPage);
@@ -86,13 +86,13 @@ const listThreeJoinServiceBestSalesForGlobal = async (
       },
     });
   }
-  if (brand !== undefined) {
+  if (subsubcategory !== undefined) {
     queryPipeline.insert(-1, {
       $match: {
         $or: [
           {
-            "brand.name": {
-              $regex: Request.query.brand,
+            "subsubcategories.name": {
+              $regex: Request.query.subsubcategory,
               $options: "i",
             },
           },

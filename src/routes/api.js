@@ -20,8 +20,7 @@ const {
   dropdownListCategory,
   getCategoryDetailsById,
   updateCategory,
-  deleteCategoryImgAndpullImg,
-  deleteCategoryWithImg,
+  deleteCategory,
 } = require("../controllers/categories/categoryController");
 const {
   createCoupon,
@@ -78,7 +77,6 @@ const {
   pushLogo,
 } = require("../controllers/settings/logoUploadController");
 const {
-  pushMainSlider,
   deleteMainSlider,
   createMainSlider,
   updateMainSliderWithImg,
@@ -93,13 +91,7 @@ const {
 const {
   updateSocialLink,
 } = require("../controllers/settings/updateSocialLinkController");
-const {
-  initPayment,
-  successPaymnet,
-  cancelPaymnet,
-  failPaymnet,
-  ipnPaymnet,
-} = require("../controllers/sslcommarce/sslcommarceController");
+
 const {
   createSubCategory,
   listSubCategories,
@@ -108,6 +100,13 @@ const {
   updateSubCategory,
   deleteSubCategory,
 } = require("../controllers/subCategory/subCategoryController");
+const {
+  createSubSubCategory,
+  listSubSubCategories,
+  getSubSubCategoryDetailsById,
+  updateSubSubCategory,
+  deleteSubSubCategory,
+} = require("../controllers/subSubCategory/subSubCategoryController");
 const {
   salesSummary,
   cancelSummary,
@@ -121,16 +120,12 @@ const {
   returnSummary,
   returnedSummaryReport,
 } = require("../controllers/summary/summaryController");
-// --------summary-----------------
 
 const {
   deleteImages,
   uploadImages,
 } = require("../controllers/upload/uploadController");
-// const {
-//   uploadImages,
-//   deleteImages,
-// } = require("../controllers/upload/uploadController");
+
 const {
   registration,
   login,
@@ -149,24 +144,16 @@ const {
 } = require("../controllers/user/userController");
 
 const {
-  createWishList,
   createAndRemoveWishList,
   getWishList,
 } = require("../controllers/wishList/wishListController");
 const { uploadPhoto } = require("../middlewares/uploadImgMiddleware");
 const verifyAdminMiddleware = require("../middlewares/verifyAdminMiddleware");
 const verifyAuthMiddleware = require("../middlewares/verifyAuthMiddleware");
-const deliveredOrderServices = require("../services/order/deliveredOrderServices");
-const BkashMiddleware = require("../middlewares/bkashMiddleware");
-const {
-  createPayment,
-  BkashCallBack,
-  refundPayment,
-} = require("../controllers/bkash/bkashController");
+
 const {
   addFaq,
   listFaq,
-  deleteFaqQuestionsOnly,
   deleteFaq,
 } = require("../controllers/privacyPolicy/faqController");
 const {
@@ -225,10 +212,7 @@ const {
   pushTeamImgs,
   deleteTeamImgs,
 } = require("../controllers/settings/privacyPolicy/teamController");
-const {
-  getDivisions,
-  getDistrictsByDivisions,
-} = require("../controllers/bdApi/divisionsController");
+
 const {
   createMultipleCurrency,
   listMultipleCurrency,
@@ -314,13 +298,6 @@ router.get(
   verifyAdminMiddleware,
   listCategory
 );
-// dropdown list Category for admin
-router.get(
-  "/dropdown-category-admin",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  dropdownListCategory
-);
 // dropdown list Category global
 router.get(
   "/dropdown-category/:pageNo/:perPage/:searchKeyword",
@@ -338,22 +315,14 @@ router.post(
   "/update-category/:id",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
   updateCategory
-);
-// delete category img
-router.post(
-  "/delete-category-img/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteCategoryImgAndpullImg
 );
 // delete category
 router.get(
   "/delete-category/:id",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  deleteCategoryWithImg
+  deleteCategory
 );
 
 //------------------------------ Sub-Categories ----------------------------------------------------------------------------
@@ -372,15 +341,11 @@ router.get(
   verifyAdminMiddleware,
   listSubCategories
 );
-// dropdown list subcategory by admin
+// dropdown list subcategory Global
 router.get(
-  "/dropdown-subcategory-admin",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
+  "/dropdown-subcategory/:pageNo/:perPage/:searchKeyword",
   dropdownListSubCategories
 );
-// dropdown list subcategory Global
-router.get("/dropdown-subcategory", dropdownListSubCategories);
 // get subcategory details by id
 router.get(
   "/subcategory-details/:id",
@@ -401,6 +366,43 @@ router.get(
   verifyAuthMiddleware,
   verifyAdminMiddleware,
   deleteSubCategory
+);
+
+//------------------------------ Sub-Sub-Categories ----------------------------------------------------------------------------
+// create sub subcategory
+router.post(
+  "/create-sub-subcategory",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  createSubSubCategory
+);
+
+// list sub subcategory
+router.get(
+  "/list-sub-subcategory/:pageNo/:perPage/:searchKeyword",
+  listSubSubCategories
+);
+
+// get sub subcategory details by id
+router.get(
+  "/sub-subcategory-details/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  getSubSubCategoryDetailsById
+);
+// update sub subcategory
+router.post(
+  "/update-sub-subcategory/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  updateSubSubCategory
+);
+// delete sub subcategory
+router.get(
+  "/delete-sub-subcategory/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  deleteSubSubCategory
 );
 
 //------------------------------ Brands  ------------------------------------
@@ -528,20 +530,7 @@ router.get(
   "/best-sales/:pageNo/:perPage/:searchKeyword",
   bestSalesProductForGlobal
 );
-// dropdown list product
-router.get(
-  "/dropdown-product",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  dropdownListProduct
-);
-// get product details by id for admin
-router.get(
-  "/product-details-admin/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  getProductDetailsById
-);
+
 // get product details by id
 router.get("/product-details/:id", getProductDetailsById);
 
@@ -688,19 +677,6 @@ router.post(
   verifyAuthMiddleware,
   changeOrderStatus
 );
-
-// ----------------------------------------------- Payment ------------------------------------
-// sslcommerz
-// router.post("/payment", initPayment);
-// router.post("/payment-success", successPaymnet);
-// router.post("/payment-cancel", cancelPaymnet);
-// router.post("/payment-fail", failPaymnet);
-// router.post("/payment-ipn", ipnPaymnet);
-
-// bkash
-router.post("/bkash-payment", BkashMiddleware, createPayment);
-router.get("/bkash-callback", BkashCallBack);
-router.post("/refund/:trxID", BkashMiddleware, refundPayment);
 
 // ---------------------Summary--------------------------------
 // Order Summary
@@ -1113,9 +1089,5 @@ router.get(
   verifyAdminMiddleware,
   deleteTeam
 );
-
-// bd api Divisions
-router.get("/get-divisions", getDivisions);
-router.get("/get-districs-by-divisions/:district", getDistrictsByDivisions);
 
 module.exports = router;

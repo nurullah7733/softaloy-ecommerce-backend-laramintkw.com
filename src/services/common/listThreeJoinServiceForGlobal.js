@@ -6,19 +6,18 @@ const listThreeJoinServiceForGlobal = async (
   joinStage2,
   joinStage3
 ) => {
-  console.log("hi .allowDiskUse()");
-  console.log(Request.query.perPage);
   // query search
   let min = Number(Request.query.min);
   let max = Number(Request.query.max);
   let category = Request.query.category;
   let subcategory = Request.query.subcategory;
-  let brand = Request.query.brand;
+  let subsubcategory = Request.query.subsubcategory;
   let discount = Number(Request.query.discount);
   let inStock = Request.query.inStock;
   let tag = Request.query.tag;
   let sortby = Request.query.sortby;
   let remark = Request.query.remark;
+  let remarkbycategory = Request.query.remarkbycategory;
 
   // let pageNo = Number(Request.params.pageNo);
   // let perPage = Number(Request.params.perPage);
@@ -95,13 +94,13 @@ const listThreeJoinServiceForGlobal = async (
       },
     });
   }
-  if (brand !== undefined) {
+  if (subsubcategory !== undefined) {
     queryPipeline.insert(-1, {
       $match: {
         $or: [
           {
-            "brand.name": {
-              $regex: Request.query.brand,
+            "subsubcategories.name": {
+              $regex: Request.query.subsubcategory,
               $options: "i",
             },
           },
@@ -150,6 +149,22 @@ const listThreeJoinServiceForGlobal = async (
           {
             remark: {
               $regex: Request.query.remark,
+              $options: "i",
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  // its for mega menu show products
+  if (remarkbycategory !== undefined) {
+    queryPipeline.insert(-1, {
+      $match: {
+        $or: [
+          {
+            remarkByCategory: {
+              $regex: Request.query.remarkbycategory,
               $options: "i",
             },
           },

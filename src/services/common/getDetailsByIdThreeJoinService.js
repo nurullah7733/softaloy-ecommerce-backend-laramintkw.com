@@ -5,8 +5,7 @@ const getDetailsByIdThreeJoinService = async (
   DataModel,
   joinStage1,
   joinStage2,
-  joinStage3,
-  joinStage4
+  joinStage3
 ) => {
   try {
     let id = Request.params.id;
@@ -21,7 +20,6 @@ const getDetailsByIdThreeJoinService = async (
         joinStage1,
         joinStage2,
         joinStage3,
-        joinStage4,
       ]);
       return { status: "success", data };
     } else {

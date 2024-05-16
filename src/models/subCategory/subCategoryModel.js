@@ -5,9 +5,9 @@ var subCategorySchema = mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
     },
+    subSubCategoryId: [{ type: mongoose.Schema.Types.ObjectId }],
   },
   { versionKey: false, timestamps: true }
 );

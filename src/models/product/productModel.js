@@ -13,11 +13,14 @@ var productSchema = mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-    shortDescription: {
-      type: String,
-      required: [true, "Sort description is required"],
-    },
     description: {
+      type: String,
+      required: true,
+    },
+    features: {
+      type: String,
+    },
+    ingredients: {
       type: String,
     },
     price: {
@@ -59,7 +62,7 @@ var productSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    brandId: {
+    subSubCategoryId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
@@ -71,6 +74,11 @@ var productSchema = mongoose.Schema(
     remark: {
       type: String,
       enum: ["Popular", "New", "Top", "Special", "Trending", "Regular"],
+    },
+    remarkByCategory: {
+      type: String,
+      trim: true,
+      lowercase: true,
     },
   },
   { versionKey: false, timestamps: true }

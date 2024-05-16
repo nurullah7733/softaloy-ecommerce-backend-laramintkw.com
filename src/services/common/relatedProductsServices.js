@@ -2,8 +2,7 @@ const RelatedProductsSearchSercice = async (
   Request,
   DataModel,
   joinStage1,
-  joinStage2,
-  joinStage3
+  joinStage2
 ) => {
   let subCategory = Request.params.subCategory;
   try {
@@ -14,7 +13,6 @@ const RelatedProductsSearchSercice = async (
     data = await DataModel.aggregate([
       joinStage1,
       joinStage2,
-      joinStage3,
       {
         $project: {
           description: 0,

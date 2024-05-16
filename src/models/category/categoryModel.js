@@ -8,9 +8,7 @@ var categorySchema = mongoose.Schema(
       unique: true,
       trim: true,
     },
-    img: {
-      type: Array,
-    },
+
     subCategoryId: [{ type: mongoose.Schema.Types.ObjectId }],
   },
   { versionKey: false, timestamps: true }

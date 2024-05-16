@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const SubCategoryModel = require("../../models/subCategory/subCategoryModel");
+const SubSubCategoryModel = require("../../models/subSubCategory/subSubCategoryModel");
 const CategoriesModel = require("../../models/category/categoryModel");
 const ProductModel = require("../../models/product/productModel");
 const checkAssociateService = require("../../services/common/checkAssociateService");
@@ -10,22 +11,21 @@ const getServiceById = require("../../services/common/getSerciceById");
 const listService = require("../../services/common/listService");
 const updateService = require("../../services/common/updateService");
 const listOneJoinServiceWithOutEmail = require("../../services/common/listOneJoinServiceWithOutEmail");
-const listTwoJoinService = require("../../services/common/listTwoJoinService");
 
-exports.createSubCategory = async (req, res) => {
+exports.createSubSubCategory = async (req, res) => {
   let reqBody = req.body;
-  let subCategoryName = reqBody["name"];
-  let categoryId = reqBody.categoryId;
+  let subSubCategoryName = reqBody["name"];
+  let subCategoryId = reqBody.subCategoryId;
 
   try {
-    let data = await SubCategoryModel.create({ name: subCategoryName });
-    await CategoriesModel.updateOne(
+    let data = await SubSubCategoryModel.create({ name: subSubCategoryName });
+    await SubCategoryModel.updateOne(
       {
-        _id: categoryId,
+        _id: subCategoryId,
       },
       {
         $push: {
-          subCategoryId: data._id,
+          subSubCategoryId: data._id,
         },
       }
     );
@@ -34,65 +34,46 @@ exports.createSubCategory = async (req, res) => {
     return res.status(200).json({ status: "fail", data: e });
   }
 };
-exports.listSubCategories = async (req, res) => {
+exports.listSubSubCategories = async (req, res) => {
   let searchRgx = { $regex: req.params.searchKeyword, $options: "i" };
   let searchArray = [{ name: searchRgx }];
-  let result = await listService(req, SubCategoryModel, searchArray);
+  let result = await listService(req, SubSubCategoryModel, searchArray);
   return res.status(200).json(result);
 };
-exports.dropdownListSubCategories = async (req, res) => {
-  let searchRgx = { $regex: req.params.searchKeyword, $options: "i" };
-  let searchArray = [{ name: searchRgx }];
-  let joinStage1 = {
-    $lookup: {
-      from: "subsubcategories",
-      localField: "subSubCategoryId",
-      foreignField: "_id",
-      as: "subsubCategories",
-    },
-  };
 
-  let data = await listOneJoinServiceWithOutEmail(
-    req,
-    SubCategoryModel,
-    searchArray,
-    joinStage1
-  );
-  return res.status(200).json(data);
-};
-exports.getSubCategoryDetailsById = async (req, res) => {
-  let result = await getServiceById(req, SubCategoryModel);
+exports.getSubSubCategoryDetailsById = async (req, res) => {
+  let result = await getServiceById(req, SubSubCategoryModel);
   return res.status(200).json(result);
 };
-exports.updateSubCategory = async (req, res) => {
+exports.updateSubSubCategory = async (req, res) => {
   try {
-    let result = await updateService(req, SubCategoryModel);
+    let result = await updateService(req, SubSubCategoryModel);
     return res.status(200).json(result);
   } catch (error) {
     return res.status(200).json({ status: "fail", data: error.toString() });
   }
 };
-exports.deleteSubCategory = async (req, res) => {
+exports.deleteSubSubCategory = async (req, res) => {
   let id = req.params.id;
   let objectId = mongoose.Types.ObjectId;
-  let queryObject = { subCategoryId: objectId(id) };
+  let queryObject = { subSubCategoryId: objectId(id) };
 
   let isDelete = await checkAssociateService(queryObject, ProductModel);
   if (isDelete === true) {
     return res.status(200).json({
       status: "associate",
-      data: "This SubCategory associate to products",
+      data: "This Sub SubCategory associate to products",
     });
   } else {
-    let result = await deleteService(req, SubCategoryModel);
+    let result = await deleteService(req, SubSubCategoryModel);
     if (result.data?.deletedCount === 1) {
-      await CategoriesModel.updateOne(
+      await SubCategoryModel.updateOne(
         {
           subCategoryId: id,
         },
         {
           $pull: {
-            subCategoryId: id,
+            subSubCategoryId: id,
           },
         }
       );
