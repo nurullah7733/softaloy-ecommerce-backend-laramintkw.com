@@ -14,5 +14,8 @@ var categorySchema = mongoose.Schema(
   { versionKey: false, timestamps: true }
 );
 
+// Add an index to the createdAt field
+categorySchema.index({ createdAt: -1 });
+
 var CategoryModel = mongoose.model("categories", categorySchema);
 module.exports = CategoryModel;

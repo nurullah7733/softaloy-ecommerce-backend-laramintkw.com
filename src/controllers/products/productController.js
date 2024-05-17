@@ -3,7 +3,6 @@ const slugify = require("slugify");
 const ProductModel = require("../../models/product/productModel");
 const OrderModel = require("../../models/order/orderModel");
 const createServiceWithImage = require("../../services/common/createServiceWithImage");
-const dropdownListService = require("../../services/common/dropdownListService");
 const listThreeJoinServiceForGlobal = require("../../services/common/listThreeJoinServiceForGlobal");
 const checkAssociateService = require("../../services/common/checkAssociateService");
 const deleteServiceWithImg = require("../../services/common/deleteServiceWithImg");
@@ -12,7 +11,6 @@ const updateServiceWithDeleteImg = require("../../services/common/updateServiceW
 const listThreeJoinServiceBestSalesForGlobal = require("../../services/common/listThreeJoinServiceBestSalesForGlobal");
 const getDetailsByIdThreeJoinService = require("../../services/common/getDetailsByIdThreeJoinService");
 const RelatedProductsSearchSercice = require("../../services/common/relatedProductsServices");
-const listThreeJoinServiceSortByCreateAt = require("../../services/products/listThreeJoinServiceSortByCreateAt");
 
 exports.createProduct = async (req, res) => {
   if (req.body.name !== "undefined") {
@@ -53,50 +51,7 @@ exports.createProduct = async (req, res) => {
 
   return res.status(200).json(result);
 };
-exports.listProduct = async (req, res) => {
-  let searchRgx = { $regex: req.params.searchKeyword, $options: "i" };
-  let searchArray = [
-    { name: searchRgx },
-    { slug: searchRgx },
-    { color: searchRgx },
-    { "category.name": searchRgx },
-    { "subCategory.name": searchRgx },
-    { "subsubcategories.name": searchRgx },
-  ];
-  let joinStage1 = {
-    $lookup: {
-      from: "categories",
-      localField: "categoryId",
-      foreignField: "_id",
-      as: "category",
-    },
-  };
-  let joinStage2 = {
-    $lookup: {
-      from: "subcategories",
-      localField: "subCategoryId",
-      foreignField: "_id",
-      as: "subCategory",
-    },
-  };
-  let joinStage3 = {
-    $lookup: {
-      from: "subsubcategories",
-      localField: "subCategory.subSubCategoryId",
-      foreignField: "_id",
-      as: "subsubcategories",
-    },
-  };
-  let result = await listThreeJoinServiceSortByCreateAt(
-    req,
-    ProductModel,
-    searchArray,
-    joinStage1,
-    joinStage2,
-    joinStage3
-  );
-  return res.status(200).json(result);
-};
+
 exports.listProductForGlobal = async (req, res) => {
   // let searchRgx = { $regex: req.params.searchKeyword, $options: "i" };
   let searchRgx = { $regex: req.query.searchKeyword, $options: "i" };
@@ -395,4 +350,20 @@ exports.relatedProducts = async (req, res) => {
     joinStage2
   );
   return res.status(200).json(result);
+};
+
+exports.getMegaMenuProductsByCategory = async (req, res) => {
+  try {
+    const data = await ProductModel.find({
+      $and: [
+        { remarkByCategory: { $exists: true } },
+        { remarkByCategory: { $ne: "" } },
+      ],
+      $sort: { createdAt: -1 },
+    });
+
+    return res.status(200).json({ status: "success", data });
+  } catch (error) {
+    return res.status(200).json({ status: "fail", data: error.toString() });
+  }
 };

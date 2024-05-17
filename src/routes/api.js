@@ -58,6 +58,7 @@ const {
   deleteProductImgAndPullImg,
   bestSalesProductForGlobal,
   relatedProducts,
+  getMegaMenuProductsByCategory,
 } = require("../controllers/products/productController");
 const {
   pushProvisionalBazar,
@@ -516,13 +517,6 @@ router.post(
   createProduct
 );
 
-// list product
-router.get(
-  "/list-product/:pageNo/:perPage/:searchKeyword",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  listProduct
-);
 // list product for Global
 router.get("/list-product-global", listProductForGlobal);
 // Best Sales product for Global
@@ -530,6 +524,9 @@ router.get(
   "/best-sales/:pageNo/:perPage/:searchKeyword",
   bestSalesProductForGlobal
 );
+
+// list product for mega menu by category
+router.get("/list-mega-menu-products", getMegaMenuProductsByCategory);
 
 // get product details by id
 router.get("/product-details/:id", getProductDetailsById);

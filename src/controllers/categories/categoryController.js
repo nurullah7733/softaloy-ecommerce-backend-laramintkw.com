@@ -13,6 +13,7 @@ const listOneJoinServiceWithOutEmail = require("../../services/common/listOneJoi
 const listTwoJoinService = require("../../services/common/listTwoJoinService");
 const updateService = require("../../services/common/updateService");
 const deleteService = require("../../services/common/deleteService");
+const listTwoJoinNestedTableService = require("../../services/common/listTwoJoinNestedTableService");
 
 exports.createCateogry = async (req, res) => {
   let result = await createService(req, CategoryModel);
@@ -43,12 +44,11 @@ exports.dropdownListCategory = async (req, res) => {
       as: "subsubCategories",
     },
   };
-  let data = await listTwoJoinService(
+  let data = await listTwoJoinNestedTableService(
     req,
     CategoryModel,
     searchArray,
-    joinStage1,
-    joinStage2
+    joinStage1
   );
   return res.status(200).json(data);
 };
