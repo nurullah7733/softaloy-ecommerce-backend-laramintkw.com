@@ -40,12 +40,7 @@ const {
   getCancelledOrderForUser,
   getReturnedOrderForUser,
 } = require("../controllers/order/orderController");
-const {
-  addProductsPrivacyPolicy,
-  updateProductsPrivacyPolicy,
-  listProductsPrivacyPolicy,
-  deleteProductsPrivacyPolicy,
-} = require("../controllers/privacyPolicy/productsPrivacyPolicyController");
+
 const {
   createProduct,
   listProduct,
@@ -161,12 +156,9 @@ const {
   addAboutUs,
   listAboutUs,
   deleteAboutUs,
+  updateAboutUs,
 } = require("../controllers/privacyPolicy/aboutUsController");
-const {
-  addTermOfUse,
-  listTermOfUse,
-  deleteTermOfUse,
-} = require("../controllers/privacyPolicy/termOfUseController");
+
 const {
   pushTermOfUse,
   pushTermOfUseImg,
@@ -192,11 +184,13 @@ const {
   addPrivacyPolicy,
   listPrivacyPolicy,
   deletePrivacyPolicy,
+  updatePrivacyPolicy,
 } = require("../controllers/privacyPolicy/privacyPolicyController");
 const {
   addContactUs,
   listContactUs,
   deleteContactUs,
+  updateContactUs,
 } = require("../controllers/privacyPolicy/contactUsController");
 const {
   addTeam,
@@ -222,6 +216,30 @@ const {
   deleteMultipleCurrencyImgAndpullImg,
   deleteMultipleCurrencyImgWithImg,
 } = require("../controllers/multipleCurrency/multipleCurrencyController");
+const {
+  addReturnAndRefundPolicy,
+  listReturnAndRefundPolicy,
+  updateReturnAndRefundPolicy,
+  deleteReturnAndRefundPolicy,
+} = require("../controllers/privacyPolicy/returnAndRefundController");
+const {
+  addTermOfCondition,
+  listTermOfCondition,
+  updateTermOfCondition,
+  deleteTermOfCondition,
+} = require("../controllers/privacyPolicy/termOfConditionController");
+const {
+  addTermOfService,
+  listTermOfService,
+  updateTermOfService,
+  deleteTermOfService,
+} = require("../controllers/privacyPolicy/termOfServiceController");
+const {
+  addRefund,
+  listRefund,
+  updateRefund,
+  deleteRefund,
+} = require("../controllers/privacyPolicy/refundController");
 
 // registration
 router.post("/registration", registration);
@@ -531,7 +549,10 @@ router.get("/list-mega-menu-products", getMegaMenuProductsByCategory);
 // get product details by id
 router.get("/product-details/:id", getProductDetailsById);
 
-router.get("/related-products/:subCategory", relatedProducts);
+router.get(
+  "/related-products/:pageNo/:perPage/:searchKeyword",
+  relatedProducts
+);
 
 // update product
 router.post(
@@ -980,35 +1001,27 @@ router.post(
 );
 router.get("/get-all-web-settings", getAllWebSetting);
 
-// --------------------------------------- Privacy Policy --------------------------------------
+// --------------------------------------- return and refund Policy --------------------------------------
 
-// add products privacy policy
-router.get("/list-products-privacy-policy", listProductsPrivacyPolicy);
-
+// add
+router.get("/list-return-and-refund-policy", listReturnAndRefundPolicy);
 router.post(
-  "/add-products-privacy-policy",
+  "/add-return-and-refund-policy",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  addProductsPrivacyPolicy
+  addReturnAndRefundPolicy
 );
-
-router.get(
-  "/delete-products-privacy-policy/:id",
+router.post(
+  "/update-return-and-refund-policy/:id",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  deleteProductsPrivacyPolicy
+  updateReturnAndRefundPolicy
 );
-
-// add faq questions
-router.post("/add-faq", verifyAuthMiddleware, verifyAdminMiddleware, addFaq);
-
-router.get("/list-faq", listFaq);
-
 router.get(
-  "/delete-faq-question/:id",
+  "/delete-return-and-refund-policy/:id",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  deleteFaq
+  deleteReturnAndRefundPolicy
 );
 
 // about us privacy policy
@@ -1017,6 +1030,13 @@ router.post(
   verifyAuthMiddleware,
   verifyAdminMiddleware,
   addAboutUs
+);
+// about us privacy policy
+router.post(
+  "/update-about-us/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  updateAboutUs
 );
 
 router.get("/list-about-us", listAboutUs);
@@ -1027,21 +1047,51 @@ router.get(
   verifyAdminMiddleware,
   deleteAboutUs
 );
-// Terms of use privacy policy
+
+// Terms of Condition privacy policy
 router.post(
-  "/add-term-of-use",
+  "/add-term-of-condition",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  addTermOfUse
+  addTermOfCondition
+);
+router.post(
+  "/update-term-of-condition/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  updateTermOfCondition
 );
 
-router.get("/list-term-of-use", listTermOfUse);
+router.get("/list-term-of-condition", listTermOfCondition);
 
 router.get(
-  "/delete-term-of-use/:id",
+  "/delete-term-of-condition/:id",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  deleteTermOfUse
+  deleteTermOfCondition
+);
+
+// Terms of Service privacy policy
+router.post(
+  "/add-term-of-service",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  addTermOfService
+);
+router.post(
+  "/update-term-of-service/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  updateTermOfService
+);
+
+router.get("/list-term-of-service", listTermOfService);
+
+router.get(
+  "/delete-term-of-service/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  deleteTermOfService
 );
 // Privacy policy
 router.post(
@@ -1053,6 +1103,12 @@ router.post(
 
 router.get("/list-privacy-policy", listPrivacyPolicy);
 
+router.post(
+  "/update-privacy-policy/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  updatePrivacyPolicy
+);
 router.get(
   "/delete-privacy-policy/:id",
   verifyAuthMiddleware,
@@ -1075,6 +1131,36 @@ router.get(
   verifyAdminMiddleware,
   deleteContactUs
 );
+router.post(
+  "/update-contact-us/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  updateContactUs
+);
+
+//  refund policy
+router.post(
+  "/add-refund-policy",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  addRefund
+);
+
+router.get("/list-refund-policy", listRefund);
+
+router.get(
+  "/delete-refund-policy/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  deleteRefund
+);
+router.post(
+  "/update-refund-policy/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  updateRefund
+);
+
 // Team
 router.post("/add-team", verifyAuthMiddleware, verifyAdminMiddleware, addTeam);
 
@@ -1085,6 +1171,18 @@ router.get(
   verifyAuthMiddleware,
   verifyAdminMiddleware,
   deleteTeam
+);
+
+// add faq questions
+router.post("/add-faq", verifyAuthMiddleware, verifyAdminMiddleware, addFaq);
+
+router.get("/list-faq", listFaq);
+
+router.get(
+  "/delete-faq-question/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  deleteFaq
 );
 
 module.exports = router;

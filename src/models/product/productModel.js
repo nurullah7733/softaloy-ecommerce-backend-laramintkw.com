@@ -66,6 +66,10 @@ var productSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    brandId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
     tags: [],
     country: String,
     skinType: String,

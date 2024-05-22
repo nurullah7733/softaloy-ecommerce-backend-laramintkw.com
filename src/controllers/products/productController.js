@@ -11,6 +11,7 @@ const updateServiceWithDeleteImg = require("../../services/common/updateServiceW
 const listThreeJoinServiceBestSalesForGlobal = require("../../services/common/listThreeJoinServiceBestSalesForGlobal");
 const getDetailsByIdThreeJoinService = require("../../services/common/getDetailsByIdThreeJoinService");
 const RelatedProductsSearchSercice = require("../../services/common/relatedProductsServices");
+const listFourJoinServiceForGlobal = require("../../services/common/listFourJoinServiceForGlobal");
 
 exports.createProduct = async (req, res) => {
   if (req.body.name !== "undefined") {
@@ -90,13 +91,22 @@ exports.listProductForGlobal = async (req, res) => {
       as: "subsubcategories",
     },
   };
-  let result = await listThreeJoinServiceForGlobal(
+  let joinStage4 = {
+    $lookup: {
+      from: "brands",
+      localField: "brandId",
+      foreignField: "_id",
+      as: "brands",
+    },
+  };
+  let result = await listFourJoinServiceForGlobal(
     req,
     ProductModel,
     searchArray,
     joinStage1,
     joinStage2,
-    joinStage3
+    joinStage3,
+    joinStage4
   );
   return res.status(200).json(result);
 };
@@ -326,6 +336,8 @@ exports.ratingsProduct = async (req, res) => {
 
 // Start search related products with subCategory.
 exports.relatedProducts = async (req, res) => {
+  let searchRgx = { $regex: req.params.searchKeyword, $options: "i" };
+  let searchArray = [{ name: searchRgx }];
   let joinStage1 = {
     $lookup: {
       from: "categories",
@@ -346,6 +358,7 @@ exports.relatedProducts = async (req, res) => {
   let result = await RelatedProductsSearchSercice(
     req,
     ProductModel,
+    searchArray,
     joinStage1,
     joinStage2
   );
