@@ -2,6 +2,7 @@ const FaqModel = require("../../models/privacyPolicy/faqModel");
 const createService = require("../../services/common/createService");
 
 const deleteService = require("../../services/common/deleteService");
+const getServiceById = require("../../services/common/getSerciceById");
 
 exports.addFaq = async (req, res) => {
   let result = await createService(req, FaqModel);

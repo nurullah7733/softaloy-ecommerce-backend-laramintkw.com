@@ -2,6 +2,7 @@ const PrivacyPolicyModel = require("../../models/privacyPolicy/privacyPolicyMode
 const createService = require("../../services/common/createService");
 
 const deleteService = require("../../services/common/deleteService");
+const getServiceById = require("../../services/common/getSerciceById");
 const updateService = require("../../services/common/updateService");
 
 exports.addPrivacyPolicy = async (req, res) => {
@@ -16,6 +17,11 @@ exports.listPrivacyPolicy = async (req, res) => {
     },
   ]);
   return res.status(200).json({ status: "success", data: result });
+};
+
+exports.getPrivacyPolicyById = async (req, res) => {
+  let result = await getServiceById(req, PrivacyPolicyModel);
+  return res.status(200).json(result);
 };
 
 exports.updatePrivacyPolicy = async (req, res) => {

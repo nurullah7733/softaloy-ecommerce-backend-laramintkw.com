@@ -43,8 +43,7 @@ const {
 
 const {
   createProduct,
-  listProduct,
-  dropdownListProduct,
+
   getProductDetailsById,
   updateProduct,
   deleteProduct,
@@ -55,23 +54,7 @@ const {
   relatedProducts,
   getMegaMenuProductsByCategory,
 } = require("../controllers/products/productController");
-const {
-  pushProvisionalBazar,
-  deleteProvisionalBazar,
-} = require("../controllers/settings/provisionalBazarController");
-const {
-  pushBestOfElectronics,
-  deleteBestOfElectronics,
-} = require("../controllers/settings/bestOfElectronicsController");
-const {
-  pushBestSalesBanner,
-  deleteBestSalesBanner,
-} = require("../controllers/settings/bestSalesBannerController");
-const {
-  logoUpload,
-  deletelogo,
-  pushLogo,
-} = require("../controllers/settings/logoUploadController");
+
 const {
   deleteMainSlider,
   createMainSlider,
@@ -79,14 +62,7 @@ const {
   deleteImgMainSlider,
   getMainSliders,
   getMainSliderDetailsById,
-} = require("../controllers/settings/mainSliderController");
-const {
-  updateShippingAndOtherCost,
-  getAllWebSetting,
-} = require("../controllers/settings/updateShippingAndOtherCostController");
-const {
-  updateSocialLink,
-} = require("../controllers/settings/updateSocialLinkController");
+} = require("../controllers/mainSlider/mainSliderController");
 
 const {
   createSubCategory,
@@ -157,56 +133,28 @@ const {
   listAboutUs,
   deleteAboutUs,
   updateAboutUs,
+  getAboutUsById,
 } = require("../controllers/privacyPolicy/aboutUsController");
 
-const {
-  pushTermOfUse,
-  pushTermOfUseImg,
-  deleteTermOfUseImg,
-} = require("../controllers/settings/privacyPolicy/termOfUseController");
-const {
-  pushAboutUsImg,
-  deleteAboutUsImg,
-} = require("../controllers/settings/privacyPolicy/aboutUsController");
-const {
-  pushFaqImg,
-  deleteFaqImg,
-} = require("../controllers/settings/privacyPolicy/faqController");
-const {
-  pushPrivacyPolicyImg,
-  deletePrivacyPolicyImg,
-} = require("../controllers/settings/privacyPolicy/privacyPolicyController");
-const {
-  pushDealerBrandLogoImg,
-  deleteDealerBrandLogoImg,
-} = require("../controllers/settings/privacyPolicy/dealerBrandLogo");
 const {
   addPrivacyPolicy,
   listPrivacyPolicy,
   deletePrivacyPolicy,
   updatePrivacyPolicy,
+  getPrivacyPolicyById,
 } = require("../controllers/privacyPolicy/privacyPolicyController");
 const {
   addContactUs,
   listContactUs,
   deleteContactUs,
   updateContactUs,
+  getContactUsById,
 } = require("../controllers/privacyPolicy/contactUsController");
 const {
   addTeam,
   listTeam,
   deleteTeam,
 } = require("../controllers/privacyPolicy/teamController");
-const {
-  pushContactUsImg,
-  deleteContactUsImg,
-} = require("../controllers/settings/privacyPolicy/contactUsController");
-const {
-  pushTeamBanner,
-  deleteTeamBanner,
-  pushTeamImgs,
-  deleteTeamImgs,
-} = require("../controllers/settings/privacyPolicy/teamController");
 
 const {
   createMultipleCurrency,
@@ -221,25 +169,43 @@ const {
   listReturnAndRefundPolicy,
   updateReturnAndRefundPolicy,
   deleteReturnAndRefundPolicy,
+  getReturnAndRefundById,
 } = require("../controllers/privacyPolicy/returnAndRefundController");
 const {
   addTermOfCondition,
   listTermOfCondition,
   updateTermOfCondition,
   deleteTermOfCondition,
+  getTermOfConditionById,
 } = require("../controllers/privacyPolicy/termOfConditionController");
 const {
   addTermOfService,
   listTermOfService,
   updateTermOfService,
   deleteTermOfService,
+  getTermOfServiceById,
 } = require("../controllers/privacyPolicy/termOfServiceController");
 const {
   addRefund,
   listRefund,
   updateRefund,
   deleteRefund,
+  getRefundById,
 } = require("../controllers/privacyPolicy/refundController");
+const {
+  listShippingCost,
+  addShippingCost,
+  updateShippingCost,
+  deleteShippingCost,
+  getShippingCostById,
+} = require("../controllers/shippingCost/shippingCostController");
+const {
+  addSocialLink,
+  listSocialLink,
+  getSocialLinkById,
+  deleteSocialLink,
+  updateSocialLinks,
+} = require("../controllers/socialLinks/socialLinksController");
 
 // registration
 router.post("/registration", registration);
@@ -776,29 +742,6 @@ router.post(
   returnedSummaryReport
 );
 
-//-------------------------- Settings -----------------------------------------------
-//-------------------------- logo -----------------------------------------------
-
-router.post(
-  "/upload-logo",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  logoUpload
-);
-router.post(
-  "/delete-logo/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deletelogo
-);
-router.post(
-  "/update-logo/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushLogo
-);
 // -------- Main Slider -------------------------------------------
 router.get(
   "/get-all-main-slider/:pageNo/:perPage/:searchKeyword",
@@ -831,180 +774,55 @@ router.post(
   verifyAdminMiddleware,
   deleteMainSlider
 );
-// -------- Terms of use -------------------------------------------
+
+// --------------------------- shipping cost ------------------------------
+router.get("/get-shipping-cost", listShippingCost);
 router.post(
-  "/add-term-of-use/:id",
+  "/add-shipping-cost",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushTermOfUseImg
+  addShippingCost
 );
 router.post(
-  "/delete-term-of-use/:id",
+  "/update-shipping-cost/:id",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  deleteTermOfUseImg
+  updateShippingCost
 );
-// -------- About us -------------------------------------------
-router.post(
-  "/add-about-us/:id",
+router.get("/get-shipping-cost-by-id/:id", getShippingCostById);
+router.get(
+  "/delete-shipping-cost/:id",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushAboutUsImg
-);
-router.post(
-  "/delete-about-us/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteAboutUsImg
-);
-// -------- Contact us -------------------------------------------
-router.post(
-  "/add-contact-us/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushContactUsImg
-);
-router.post(
-  "/delete-contact-us/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteContactUsImg
-);
-// -------- Team -------------------------------------------
-router.post(
-  "/add-team-banner/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushTeamBanner
-);
-router.post(
-  "/delete-team-banner/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteTeamBanner
-);
-router.post(
-  "/add-team-imgs/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushTeamImgs
-);
-router.post(
-  "/delete-team-imgs/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteTeamImgs
-);
-// -------- faq -------------------------------------------
-router.post(
-  "/add-faq/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushFaqImg
-);
-router.post(
-  "/delete-faq/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteFaqImg
-);
-// -------- Privacy Policy -------------------------------------------
-router.post(
-  "/add-privacy-policy/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushPrivacyPolicyImg
-);
-router.post(
-  "/delete-privacy-policy/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deletePrivacyPolicyImg
-);
-// -------- Dealer Brand Logo -------------------------------------------
-router.post(
-  "/add-dealer-brand-logo/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushDealerBrandLogoImg
-);
-router.post(
-  "/delete-dealer-brand-logo/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteDealerBrandLogoImg
-);
-// -------- BestSales Banner -------------------------------------------
-router.post(
-  "/add-best-sales-banner/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushBestSalesBanner
-);
-router.post(
-  "/delete-best-sales-banner/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteBestSalesBanner
-);
-// -------- provisionalBazar Banner -------------------------------------------
-router.post(
-  "/add-provisional-bazar-banner/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushProvisionalBazar
-);
-router.post(
-  "/delete-provisional-bazar-banner/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteProvisionalBazar
-);
-// -------- bestOfElectronics Banner -------------------------------------------
-router.post(
-  "/add-best-of-electronics-banner/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  uploadPhoto.array("images", 10),
-  pushBestOfElectronics
-);
-router.post(
-  "/delete-best-of-electronics-banner/:id",
-  verifyAuthMiddleware,
-  verifyAdminMiddleware,
-  deleteBestOfElectronics
+  deleteShippingCost
 );
 
-// -------- Shipping cost -------------------------------------------
+// --------------------------- Social Links  ------------------------------
+router.get("/get-social-link", listSocialLink);
 router.post(
-  "/udpate-shipping-and-other-cost/:id",
+  "/add-social-link",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  updateShippingAndOtherCost
+  addSocialLink
 );
-// -------- Social link -------------------------------------------
 router.post(
-  "/udpate-social-link/:id",
+  "/update-social-link/:id",
   verifyAuthMiddleware,
   verifyAdminMiddleware,
-  updateSocialLink
+  updateSocialLinks
 );
-router.get("/get-all-web-settings", getAllWebSetting);
+router.get("/get-social-link-by-id/:id", getSocialLinkById);
+router.get(
+  "/delete-social-link/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  deleteSocialLink
+);
 
 // --------------------------------------- return and refund Policy --------------------------------------
 
-// add
 router.get("/list-return-and-refund-policy", listReturnAndRefundPolicy);
+router.get("/get-return-and-refund-policy-by-id/:id", getReturnAndRefundById);
 router.post(
   "/add-return-and-refund-policy",
   verifyAuthMiddleware,
@@ -1039,6 +857,7 @@ router.post(
   updateAboutUs
 );
 
+router.get("/get-about-us-by-id/:id", getAboutUsById);
 router.get("/list-about-us", listAboutUs);
 
 router.get(
@@ -1063,6 +882,7 @@ router.post(
 );
 
 router.get("/list-term-of-condition", listTermOfCondition);
+router.get("/get-term-of-condition-by-id/:id", getTermOfConditionById);
 
 router.get(
   "/delete-term-of-condition/:id",
@@ -1086,6 +906,7 @@ router.post(
 );
 
 router.get("/list-term-of-service", listTermOfService);
+router.get("/get-term-of-service-by-id/:id", getTermOfServiceById);
 
 router.get(
   "/delete-term-of-service/:id",
@@ -1102,6 +923,7 @@ router.post(
 );
 
 router.get("/list-privacy-policy", listPrivacyPolicy);
+router.get("/get-privacy-policy-by-id/:id", getPrivacyPolicyById);
 
 router.post(
   "/update-privacy-policy/:id",
@@ -1131,6 +953,7 @@ router.get(
   verifyAdminMiddleware,
   deleteContactUs
 );
+router.get("/get-contact-us-by-id/:id", getContactUsById);
 router.post(
   "/update-contact-us/:id",
   verifyAuthMiddleware,
@@ -1147,6 +970,7 @@ router.post(
 );
 
 router.get("/list-refund-policy", listRefund);
+router.get("/get-refund-policy-by-id/:id", getRefundById);
 
 router.get(
   "/delete-refund-policy/:id",

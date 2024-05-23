@@ -1,6 +1,7 @@
 const TermOfConditionModel = require("../../models/privacyPolicy/termOfConditionModel");
 const createService = require("../../services/common/createService");
 const deleteService = require("../../services/common/deleteService");
+const getServiceById = require("../../services/common/getSerciceById");
 const updateService = require("../../services/common/updateService");
 
 exports.addTermOfCondition = async (req, res) => {
@@ -15,6 +16,11 @@ exports.listTermOfCondition = async (req, res) => {
     },
   ]);
   return res.status(200).json({ status: "success", data: result });
+};
+
+exports.getTermOfConditionById = async (req, res) => {
+  let result = await getServiceById(req, TermOfConditionModel);
+  return res.status(200).json(result);
 };
 
 exports.updateTermOfCondition = async (req, res) => {

@@ -2,6 +2,7 @@ const RefundModel = require("../../models/privacyPolicy/refundModel");
 const createService = require("../../services/common/createService");
 
 const deleteService = require("../../services/common/deleteService");
+const getServiceById = require("../../services/common/getSerciceById");
 const updateService = require("../../services/common/updateService");
 
 exports.addRefund = async (req, res) => {
@@ -16,6 +17,11 @@ exports.listRefund = async (req, res) => {
     },
   ]);
   return res.status(200).json({ status: "success", data: result });
+};
+
+exports.getRefundById = async (req, res) => {
+  let result = await getServiceById(req, RefundModel);
+  return res.status(200).json(result);
 };
 
 exports.updateRefund = async (req, res) => {
