@@ -605,7 +605,7 @@ router.post(
 router.get("/delete-card/:id", verifyAuthMiddleware, deleteCard);
 
 // ------------------------- Order -------------------------------------------------------------
-router.post("/create-order", verifyAuthMiddleware, createOrder);
+router.post("/create-order", createOrder);
 // get all order for admin only
 router.get(
   "/get-all-order-for-admin/:pageNo/:perPage/:searchKeyword",

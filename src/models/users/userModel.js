@@ -21,25 +21,16 @@ var userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    mobile: {
+    phone: {
       type: String,
       required: true,
-      unique: true,
     },
     photo: {
       type: Array,
     },
     cart: [],
     wishList: [{ type: mongoose.Schema.Types.ObjectId, default: [] }],
-    address: {
-      street1: String,
-      street2: String,
-      thana: String,
-      city: String,
-      state: String,
-      country: String,
-      zip: String,
-    },
+    address: {},
     role: {
       type: String,
       default: "user",

@@ -34,7 +34,7 @@ const userLoginService = async (Request, Response, DataModel) => {
             firstName: data[0].firstName,
             lastName: data[0].lastName,
             email: data[0].email,
-            mobile: data[0].mobile,
+            phone: data[0].phone,
             photo: data[0].photo,
             cart: data[0].cart,
             wishList: data[0].wishList,

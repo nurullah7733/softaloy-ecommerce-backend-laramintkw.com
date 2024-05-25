@@ -1,5 +1,6 @@
 let mongoose = require("mongoose");
 const OrderModel = require("../../models/order/orderModel");
+const UserModel = require("../../models/users/userModel");
 const getDetailsByIdTwoJoinService = require("../../services/common/getDetailsByIdTwoJoinService");
 const listTwoJoinService = require("../../services/common/listTwoJoinService");
 const updateServiceOrderChangeStatus = require("../../services/order/updateServiceChangeOrderStatus");
@@ -10,15 +11,41 @@ const deliveredOrderServices = require("../../services/order/deliveredOrderServi
 const cancelledOrderServices = require("../../services/order/cancelledOrderServices");
 const returnedOrderServices = require("../../services/order/returnedOrderServices");
 
+const createUserServiceWhenOrder = require("../../services/user/userCreateServiceWhenOrder");
+
 exports.createOrder = async (req, res) => {
   let reqBody = req.body;
   let orderId = uniqid.process();
   reqBody.orderId = orderId;
+
   reqBody.userId = req.headers.userId;
+
   reqBody["paymentIntent"] = {
     paymentId: "",
     amount: reqBody.grandTotal,
   };
+
+  const createUserData = {
+    firstName: reqBody.shippingAddress.firstName,
+    lastName: reqBody.shippingAddress.lastName,
+    email: reqBody.shippingAddress.email,
+    phone: reqBody.shippingAddress.phone,
+    address: reqBody?.shippingAddress,
+  };
+
+  if (!req.headers.userId) {
+    const exitsUser = await UserModel.find({
+      email: reqBody.shippingAddress.email,
+    });
+
+    if (!exitsUser.length) {
+      const createUser = await createUserServiceWhenOrder(
+        createUserData,
+        UserModel
+      );
+      reqBody.userId = createUser.data._id;
+    }
+  }
 
   let result = await createServiceWithIncreaseDecreaseItem(req, OrderModel);
   return res.status(200).json(result);
