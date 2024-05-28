@@ -112,7 +112,7 @@ const {
   allAdmin,
   logOut,
   addToCart,
-  contactUsForm,
+  subcriptionEmailForm,
 } = require("../controllers/user/userController");
 
 const {
@@ -258,7 +258,7 @@ router.post("/save-address/:id", verifyAuthMiddleware, saveUserAddress);
 router.post("/add-to-cart/:id", verifyAuthMiddleware, addToCart);
 
 //------------------------------ contact form----------------------------------------------------------------
-router.post("/contact-us-form", contactUsForm);
+router.post("/subcription-email", subcriptionEmailForm);
 //------------------------------ Reset password----------------------------------------------------------------------------
 // step 01
 router.get("/verify-email/:email", verifyEmail);
@@ -584,7 +584,7 @@ router.get(
   verifyAdminMiddleware,
   deleteCoupon
 );
-router.post("/validate-coupon-code", verifyAuthMiddleware, validateCouponCode);
+router.post("/validate-coupon-code", validateCouponCode);
 
 // ------------------------- Upload Img ------------------------------------------------
 router.post("/upload-img", uploadPhoto.array("images", 10), uploadImages);

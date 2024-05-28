@@ -12,12 +12,13 @@ const userResetPasswordService = require("../../services/user/resetPassword/user
 const updateService = require("../../services/common/updateService");
 const allAdminService = require("../../services/user/adminAllService");
 const userAddToCartService = require("../../services/user/userCart/userAddToCartServices");
-const SendEmailUtilityForContactUs = require("../../utils/sendEmailUtilityForContactUs");
+
 const fs = require("fs");
 const {
   uploadMultipleImages,
   deleteCloudinaryImg,
 } = require("../../utils/cloudinary");
+const SendEmailUtilityForEmailSubcription = require("../../utils/sendEmailUtilityForEmailSubcription");
 
 exports.registration = async (req, res) => {
   let data = await userCreateService(req, userModel);
@@ -187,9 +188,9 @@ exports.addToCart = async (req, res) => {
 };
 
 // ------------------------ Contact Us -------------------------------------//
-exports.contactUsForm = async (req, res) => {
-  let { name, email, phone, message } = req.body;
-  let data = await SendEmailUtilityForContactUs(name, email, phone, message);
+exports.subcriptionEmailForm = async (req, res) => {
+  let { email } = req.body;
+  let data = await SendEmailUtilityForEmailSubcription(email);
   return res.status(200).json(data);
 };
 

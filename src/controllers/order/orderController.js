@@ -37,13 +37,14 @@ exports.createOrder = async (req, res) => {
     const exitsUser = await UserModel.find({
       email: reqBody.shippingAddress.email,
     });
-
     if (!exitsUser.length) {
       const createUser = await createUserServiceWhenOrder(
         createUserData,
         UserModel
       );
       reqBody.userId = createUser.data._id;
+    } else {
+      reqBody.userId = exitsUser[0]._id;
     }
   }
 
