@@ -21,7 +21,9 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:3001",
-      "https://lara-mint-ecommerce-app.vercel.app/",
+      "https://laramintkw.com",
+      "https://lara-mint-ecommerce-app.vercel.app",
+      /\.laramintkw\.com$/,
     ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
