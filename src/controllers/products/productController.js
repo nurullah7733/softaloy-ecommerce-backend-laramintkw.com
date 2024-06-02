@@ -12,6 +12,7 @@ const listThreeJoinServiceBestSalesForGlobal = require("../../services/common/li
 const getDetailsByIdThreeJoinService = require("../../services/common/getDetailsByIdThreeJoinService");
 const RelatedProductsSearchSercice = require("../../services/common/relatedProductsServices");
 const listFourJoinServiceForGlobal = require("../../services/common/listFourJoinServiceForGlobal");
+const getDetailsByIdForuJoinService = require("../../services/common/getDetailsByIdFourJoinService");
 
 exports.createProduct = async (req, res) => {
   if (req.body.name !== "undefined") {
@@ -65,6 +66,7 @@ exports.listProductForGlobal = async (req, res) => {
     { "category.name": searchRgx },
     { "subCategory.name": searchRgx },
     { "subsubcategories.name": searchRgx },
+    { "brands.name": searchRgx },
   ];
 
   let joinStage1 = {
@@ -182,13 +184,22 @@ exports.getProductDetailsById = async (req, res) => {
       as: "subsubcategories",
     },
   };
+  let joinStage4 = {
+    $lookup: {
+      from: "brands",
+      localField: "brandId",
+      foreignField: "_id",
+      as: "brands",
+    },
+  };
 
-  let result = await getDetailsByIdThreeJoinService(
+  let result = await getDetailsByIdForuJoinService(
     req,
     ProductModel,
     joinStage1,
     joinStage2,
-    joinStage3
+    joinStage3,
+    joinStage4
   );
   return res.status(200).json(result);
 };

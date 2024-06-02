@@ -65,9 +65,69 @@ exports.getSubCategoryDetailsById = async (req, res) => {
   return res.status(200).json(result);
 };
 exports.updateSubCategory = async (req, res) => {
+  let categoryId = req.body.categoryId;
+  let subCategoryId = req.params.id || req.body.id;
+  // push subcategory in category
+  let checkCategoryId = mongoose.Types.ObjectId.isValid(categoryId);
+  let checkSubcategoryId = mongoose.Types.ObjectId.isValid(subCategoryId);
   try {
     let result = await updateService(req, SubCategoryModel);
-    return res.status(200).json(result);
+    if (checkCategoryId && checkSubcategoryId) {
+      // check if category has subcategory
+      let category = await CategoriesModel.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(categoryId) } },
+        {
+          $project: {
+            _id: 0,
+            hasRated: {
+              $in: [mongoose.Types.ObjectId(subCategoryId), "$subCategoryId"],
+            },
+          },
+        },
+      ]);
+
+      // push subcategory in category
+      if (!category[0].hasRated) {
+        updateRating = await CategoriesModel.updateOne(
+          {
+            _id: categoryId,
+          },
+          {
+            $push: {
+              subCategoryId: subCategoryId,
+            },
+          }
+        );
+      }
+      // find subcategory in another category
+      let subCategoryInAnotherCategory = await CategoriesModel.aggregate([
+        {
+          $match: {
+            subCategoryId: mongoose.Types.ObjectId(subCategoryId),
+            _id: { $ne: mongoose.Types.ObjectId(categoryId) },
+          },
+        },
+      ]);
+      // pull subcategory in another category
+      if (subCategoryInAnotherCategory.length > 0) {
+        await CategoriesModel.updateOne(
+          {
+            _id: subCategoryInAnotherCategory[0]._id,
+          },
+          {
+            $pull: {
+              subCategoryId: subCategoryId,
+            },
+          }
+        );
+      }
+
+      return res.status(200).json(result);
+    } else {
+      return res
+        .status(200)
+        .json({ status: "fail", data: "Invalid Object id" });
+    }
   } catch (error) {
     return res.status(200).json({ status: "fail", data: error.toString() });
   }

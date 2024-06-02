@@ -79,7 +79,7 @@ var productSchema = mongoose.Schema(
       type: String,
       enum: ["Popular", "New", "Top", "Special", "Trending", "Regular"],
     },
-    remarkByCategory: {
+    remarkByCategoryId: {
       type: String,
       trim: true,
       lowercase: true,

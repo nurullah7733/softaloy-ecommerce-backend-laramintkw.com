@@ -13,7 +13,11 @@ const listService = async (Request, DataModel, searchArray) => {
         {
           $facet: {
             total: [{ $count: "count" }],
-            rows: [{ $skip: skipRow }, { $limit: perPage }],
+            rows: [
+              { $sort: { createdAt: -1 } },
+              { $skip: skipRow },
+              { $limit: perPage },
+            ],
           },
         },
       ]);
@@ -25,7 +29,11 @@ const listService = async (Request, DataModel, searchArray) => {
         {
           $facet: {
             total: [{ $count: "count" }],
-            rows: [{ $skip: skipRow }, { $limit: perPage }],
+            rows: [
+              { $sort: { createdAt: -1 } },
+              { $skip: skipRow },
+              { $limit: perPage },
+            ],
           },
         },
       ]);

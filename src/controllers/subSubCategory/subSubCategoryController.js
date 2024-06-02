@@ -46,9 +46,74 @@ exports.getSubSubCategoryDetailsById = async (req, res) => {
   return res.status(200).json(result);
 };
 exports.updateSubSubCategory = async (req, res) => {
+  let subCategoryId = req.body.subCategoryId;
+  let subSubCategoryId = req.params.id || req.body.id;
+  // push sub sub category in subcategory
+  let checkSubSubCategoryId = mongoose.Types.ObjectId.isValid(subSubCategoryId);
+  let checkSubCategoryId = mongoose.Types.ObjectId.isValid(subCategoryId);
   try {
     let result = await updateService(req, SubSubCategoryModel);
-    return res.status(200).json(result);
+    if (checkSubCategoryId && checkSubSubCategoryId) {
+      // check if category has subcategory
+      let subCategory = await SubCategoryModel.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(subCategoryId) } },
+        {
+          $project: {
+            _id: 0,
+            hasRated: {
+              $in: [
+                mongoose.Types.ObjectId(subSubCategoryId),
+                "$subSubCategoryId",
+              ],
+            },
+          },
+        },
+      ]);
+
+      // push subcategory in category
+      if (!subCategory[0].hasRated) {
+        updateRating = await SubCategoryModel.updateOne(
+          {
+            _id: subCategoryId,
+          },
+          {
+            $push: {
+              subSubCategoryId: subSubCategoryId,
+            },
+          }
+        );
+      }
+      // find sub subcategory in another subcategory
+      let subSubCategoryInAnotherSubCategory = await SubCategoryModel.aggregate(
+        [
+          {
+            $match: {
+              subSubCategoryId: mongoose.Types.ObjectId(subSubCategoryId),
+              _id: { $ne: mongoose.Types.ObjectId(subCategoryId) },
+            },
+          },
+        ]
+      );
+      // pull subcategory in another category
+      if (subSubCategoryInAnotherSubCategory.length > 0) {
+        await SubCategoryModel.updateOne(
+          {
+            _id: subSubCategoryInAnotherSubCategory[0]._id,
+          },
+          {
+            $pull: {
+              subSubCategoryId: subSubCategoryId,
+            },
+          }
+        );
+      }
+
+      return res.status(200).json(result);
+    } else {
+      return res
+        .status(200)
+        .json({ status: "fail", data: "Invalid Object Id" });
+    }
   } catch (error) {
     return res.status(200).json({ status: "fail", data: error.toString() });
   }
