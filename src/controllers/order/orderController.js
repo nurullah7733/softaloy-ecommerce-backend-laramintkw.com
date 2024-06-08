@@ -12,6 +12,7 @@ const cancelledOrderServices = require("../../services/order/cancelledOrderServi
 const returnedOrderServices = require("../../services/order/returnedOrderServices");
 
 const createUserServiceWhenOrder = require("../../services/user/userCreateServiceWhenOrder");
+const SendEmailUtility = require("../../utils/sendMaliUtility");
 
 exports.createOrder = async (req, res) => {
   let reqBody = req.body;
@@ -49,6 +50,16 @@ exports.createOrder = async (req, res) => {
   }
 
   let result = await createServiceWithIncreaseDecreaseItem(req, OrderModel);
+
+  // order then send email to user
+  if (result?.data?.orderId?.length > 1) {
+    await SendEmailUtility(
+      reqBody?.shippingAddress?.email,
+      "Order Placed",
+      `Thank you for your purchase! Your order has been successfully placed. Order ID: ${result?.data?.orderId}`
+    );
+  }
+
   return res.status(200).json(result);
 };
 

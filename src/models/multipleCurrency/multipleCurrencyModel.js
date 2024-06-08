@@ -16,6 +16,7 @@ var multipleCurrencySchema = mongoose.Schema(
     currencyCode: {
       type: String,
       required: true,
+
       trim: true,
     },
     img: {
@@ -24,6 +25,10 @@ var multipleCurrencySchema = mongoose.Schema(
   },
   { versionKey: false, timestamps: true }
 );
+multipleCurrencySchema.pre("save", function (next) {
+  this.currencyCode = this.currencyCode.toUpperCase();
+  next();
+});
 
 var MultipleCurrencyModel = mongoose.model(
   "multiplecurrencies",

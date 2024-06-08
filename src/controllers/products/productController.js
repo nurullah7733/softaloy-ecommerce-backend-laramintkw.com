@@ -37,11 +37,11 @@ exports.createProduct = async (req, res) => {
     req.body.finalPrice = (
       (Number(req.body.price) * (100 - req.body.discount)) /
       100
-    ).toFixed(2);
+    ).toFixed(3);
     req.body.saveAmount = (
       Number(req.body.price) *
       (req.body.discount / 100)
-    ).toFixed(2);
+    ).toFixed(3);
   }
   let result = await createServiceWithImage(
     req,
@@ -218,9 +218,9 @@ exports.updateProduct = async (req, res) => {
     req.body.finalPrice = (
       (req.body.price * (100 - req.body.discount)) /
       100
-    ).toFixed(2);
+    ).toFixed(3);
     req.body.saveAmount = (req.body.price * (req.body.discount / 100)).toFixed(
-      2
+      3
     );
   }
   let result = await updateServiceWithImg(

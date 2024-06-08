@@ -1,7 +1,11 @@
 var nodemailer = require("nodemailer");
 var smtpTransport = require("nodemailer-smtp-transport");
 
-const SendEmailUtility = async (EmailTo, EmailText) => {
+const SendEmailUtility = async (
+  EmailTo,
+  subject = "Password Reset",
+  EmailText
+) => {
   var transporter = nodemailer.createTransport(
     smtpTransport({
       host: "mail.laramintkw.com",
@@ -21,7 +25,7 @@ const SendEmailUtility = async (EmailTo, EmailText) => {
   var mailOptions = {
     from: "laramintkw.com <info@laramintkw.com>",
     to: [EmailTo],
-    subject: "Password Reset",
+    subject: subject,
     text: EmailText,
   };
 
