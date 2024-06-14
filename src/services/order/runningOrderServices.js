@@ -15,30 +15,20 @@ const runningOrderServices = async (
 
   try {
     let data;
+    const baseMatch = [
+      { $match: { userId: mongoose.Types.ObjectId(userId) } },
+      { $match: { orderStatus: { $not: { $eq: "Delivered" } } } },
+      { $match: { orderStatus: { $not: { $eq: "Cancelled" } } } },
+      { $match: { orderStatus: { $not: { $eq: "Returned" } } } },
+    ];
+
     if (searchKeyword !== "0") {
       data = await DataModel.aggregate([
-        // { $match: { $expr: { $ne: ["$events", []] } } },
-        {
-          $match: { userId: mongoose.Types.ObjectId(userId) },
-        },
-        {
-          $match: {
-            orderStatus: { $not: { $eq: "Delivered" } },
-          },
-        },
-        {
-          $match: {
-            orderStatus: { $not: { $eq: "Cancelled" } },
-          },
-        },
-        {
-          $match: {
-            orderStatus: { $not: { $eq: "Returned" } },
-          },
-        },
+        ...baseMatch,
         joinStage1,
         joinStage2,
         { $match: { $or: searchArray } },
+        { $sort: { createdAt: -1 } }, // Sort by createdAt in descending order
         {
           $facet: {
             total: [{ $count: "count" }],
@@ -48,26 +38,10 @@ const runningOrderServices = async (
       ]);
     } else {
       data = await DataModel.aggregate([
-        {
-          $match: { userId: mongoose.Types.ObjectId(userId) },
-        },
-        {
-          $match: {
-            orderStatus: { $not: { $eq: "Delivered" } },
-          },
-        },
-        {
-          $match: {
-            orderStatus: { $not: { $eq: "Cancelled" } },
-          },
-        },
-        {
-          $match: {
-            orderStatus: { $not: { $eq: "Returned" } },
-          },
-        },
+        ...baseMatch,
         joinStage1,
         joinStage2,
+        { $sort: { createdAt: -1 } }, // Sort by createdAt in descending order
         {
           $facet: {
             total: [{ $count: "count" }],

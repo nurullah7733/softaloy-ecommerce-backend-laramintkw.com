@@ -29,6 +29,7 @@ const returnedOrderServices = async (
         joinStage1,
         joinStage2,
         { $match: { $or: searchArray } },
+        { $sort: { createdAt: -1 } },
         {
           $facet: {
             total: [{ $count: "count" }],
@@ -49,6 +50,7 @@ const returnedOrderServices = async (
 
         joinStage1,
         joinStage2,
+        { $sort: { createdAt: -1 } },
         {
           $facet: {
             total: [{ $count: "count" }],
