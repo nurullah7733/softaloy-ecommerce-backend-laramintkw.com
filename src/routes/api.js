@@ -206,6 +206,12 @@ const {
   deleteSocialLink,
   updateSocialLinks,
 } = require("../controllers/socialLinks/socialLinksController");
+const {
+  initiatePayment,
+  executivePayment,
+  failPayment,
+  successPayment,
+} = require("../controllers/myFatoorah/myFatoorahController");
 
 // registration
 router.post("/registration", registration);
@@ -1009,6 +1015,10 @@ router.get(
   deleteFaq
 );
 
-// knet payment
+// myFatoorah payment
+router.post("/create-payment", initiatePayment);
+router.post("/create-order-by-myfatoorah-executive-payment", executivePayment);
+router.get("/success-payment", successPayment);
+router.get("/fail-payment", failPayment);
 
 module.exports = router;

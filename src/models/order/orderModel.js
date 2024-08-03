@@ -28,6 +28,7 @@ const orderSchema = mongoose.Schema(
     paymentIntent: {
       paymentId: String,
       paymentMethod: String,
+      paymentStatus: String,
       amount: Number,
     },
     vatTax: { type: Number, default: 0 },

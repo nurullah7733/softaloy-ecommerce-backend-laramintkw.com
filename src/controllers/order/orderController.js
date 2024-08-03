@@ -18,13 +18,11 @@ exports.createOrder = async (req, res) => {
   let reqBody = req.body;
   let orderId = uniqid.process();
   reqBody.orderId = orderId;
-
   reqBody.userId = req.headers.userId;
-
-  reqBody["paymentIntent"] = {
-    paymentId: "",
-    amount: reqBody.grandTotal,
-  };
+  // reqBody["paymentIntent"] = {
+  //   paymentId: "",
+  //   amount: reqBody.grandTotal,
+  // };
 
   const createUserData = {
     firstName: reqBody.shippingAddress.firstName,
