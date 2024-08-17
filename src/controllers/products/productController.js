@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 const ProductModel = require("../../models/product/productModel");
+const BrandModel = require("../../models/brand/brandModel");
 const OrderModel = require("../../models/order/orderModel");
 const createServiceWithImage = require("../../services/common/createServiceWithImage");
 const listThreeJoinServiceForGlobal = require("../../services/common/listThreeJoinServiceForGlobal");
@@ -47,8 +48,8 @@ exports.createProduct = async (req, res) => {
     req,
     ProductModel,
     "products",
-    400,
-    400
+    600,
+    600
   );
 
   return res.status(200).json(result);
@@ -110,6 +111,7 @@ exports.listProductForGlobal = async (req, res) => {
     joinStage3,
     joinStage4
   );
+  // const result = await BrandModel.find({ name: "la roche posay" });
   return res.status(200).json(result);
 };
 // Best Sales Products
@@ -227,8 +229,8 @@ exports.updateProduct = async (req, res) => {
     req,
     ProductModel,
     "products",
-    400,
-    400
+    600,
+    600
   );
   return res.status(200).json(result);
 };

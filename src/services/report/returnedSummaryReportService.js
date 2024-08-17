@@ -1,6 +1,9 @@
 const ReturnedSummaryReportService = async (Request, DataModel) => {
-  let fromDate = Request.body.fromDate;
-  let toDate = Request.body.toDate;
+  let fromDate = new Date(Request.body.fromDate);
+  let toDate = new Date(Request.body.toDate);
+
+  fromDate.setHours(0, 0, 0, 0);
+  toDate.setHours(23, 59, 59, 999);
 
   try {
     let data = await DataModel.aggregate([
@@ -16,6 +19,14 @@ const ReturnedSummaryReportService = async (Request, DataModel) => {
           rows: [
             {
               $lookup: {
+                from: "users",
+                localField: "userId",
+                foreignField: "_id",
+                as: "userDetails",
+              },
+            },
+            {
+              $lookup: {
                 from: "products",
                 localField: "allProducts.productId",
                 foreignField: "_id",
@@ -27,7 +38,7 @@ const ReturnedSummaryReportService = async (Request, DataModel) => {
                 from: "categories",
                 localField: "productsDetails.categoryId",
                 foreignField: "_id",
-                as: "categoryName",
+                as: "categories",
               },
             },
             {
@@ -35,7 +46,7 @@ const ReturnedSummaryReportService = async (Request, DataModel) => {
                 from: "subcategories",
                 localField: "productsDetails.subCategoryId",
                 foreignField: "_id",
-                as: "subCategoryName",
+                as: "subCategories",
               },
             },
             {
@@ -43,7 +54,7 @@ const ReturnedSummaryReportService = async (Request, DataModel) => {
                 from: "brands",
                 localField: "productsDetails.brandId",
                 foreignField: "_id",
-                as: "brandName",
+                as: "brands",
               },
             },
           ],

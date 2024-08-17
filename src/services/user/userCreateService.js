@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const SendEmailUtilityCreateUserWhenOrderToNewEmail = require("../../utils/sendEmailUtilityCreateUserWhenOrderToNewEmail");
 const createUserService = async (Request, DataModel) => {
   let reqBody = Request.body;
   let password = Request.body.password;
@@ -12,9 +13,16 @@ const createUserService = async (Request, DataModel) => {
 
   try {
     const salt = await bcrypt.genSaltSync(10);
-    password = await bcrypt.hash(password, salt);
-    reqBody.password = password;
+    const hashPassword = await bcrypt.hash(password, salt);
+    reqBody.password = hashPassword;
     let data = await DataModel.create(reqBody);
+
+    // mail send email & password
+    await SendEmailUtilityCreateUserWhenOrderToNewEmail(
+      Request.body.email,
+      password
+    );
+
     return { status: "success", data };
   } catch (error) {
     return { status: "fail", data: error };

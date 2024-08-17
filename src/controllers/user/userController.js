@@ -32,8 +32,8 @@ exports.login = async (req, res) => {
 exports.logOut = async (req, res) => {
   res.clearCookie("token");
   res.clearCookie("token2");
-  res.clearCookie("token", { domain: ".egolap.com", path: "/" });
-  res.clearCookie("token2", { domain: ".egolap.com", path: "/" });
+  res.clearCookie("token", { domain: ".laramintkw.com", path: "/" });
+  res.clearCookie("token2", { domain: ".laramintkw.com", path: "/" });
   res.clearCookie("token", { domain: ".localhost", path: "/" });
   res.clearCookie("token2", { domain: ".localhost", path: "/" });
   return res
