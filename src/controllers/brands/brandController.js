@@ -36,7 +36,7 @@ exports.getBrandDetailsById = async (req, res) => {
   return res.status(200).json(result);
 };
 exports.updateBrand = async (req, res) => {
-  let result = await updateServiceWithImg(req, BrandModel, "brands", 80, 80);
+  let result = await updateServiceWithImg(req, BrandModel, "brands", 300, 128);
   return res.status(200).json(result);
 };
 
