@@ -510,10 +510,7 @@ router.post(
 // list product for Global
 router.get("/list-product-global", listProductForGlobal);
 // Best Sales product for Global
-router.get(
-  "/best-sales/:pageNo/:perPage/:searchKeyword",
-  bestSalesProductForGlobal
-);
+router.get("/best-sales", bestSalesProductForGlobal);
 
 // list product for mega menu by category
 router.get("/list-mega-menu-products", getMegaMenuProductsByCategory);

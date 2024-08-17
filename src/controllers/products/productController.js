@@ -4,18 +4,21 @@ const ProductModel = require("../../models/product/productModel");
 const BrandModel = require("../../models/brand/brandModel");
 const OrderModel = require("../../models/order/orderModel");
 const createServiceWithImage = require("../../services/common/createServiceWithImage");
-const listThreeJoinServiceForGlobal = require("../../services/common/listThreeJoinServiceForGlobal");
+
 const checkAssociateService = require("../../services/common/checkAssociateService");
 const deleteServiceWithImg = require("../../services/common/deleteServiceWithImg");
 const updateServiceWithImg = require("../../services/common/updateServiceWithImg");
 const updateServiceWithDeleteImg = require("../../services/common/updateServiceWithDeleteImg");
-const listThreeJoinServiceBestSalesForGlobal = require("../../services/common/listThreeJoinServiceBestSalesForGlobal");
+const listThreeJoinServiceBestSalesForGlobal = require("../../services/common/listFourJoinServiceBestSalesForGlobal");
 const getDetailsByIdThreeJoinService = require("../../services/common/getDetailsByIdThreeJoinService");
 const RelatedProductsSearchSercice = require("../../services/common/relatedProductsServices");
 const listFourJoinServiceForGlobal = require("../../services/common/listFourJoinServiceForGlobal");
 const getDetailsByIdForuJoinService = require("../../services/common/getDetailsByIdFourJoinService");
+const listFourJoinServiceBestSalesForGlobal = require("../../services/common/listFourJoinServiceBestSalesForGlobal");
 
 exports.createProduct = async (req, res) => {
+  console.log(req.body, "req.body");
+
   if (req.body.name !== "undefined") {
     req.body.slug = slugify(req.body.name);
   }
@@ -116,7 +119,7 @@ exports.listProductForGlobal = async (req, res) => {
 };
 // Best Sales Products
 exports.bestSalesProductForGlobal = async (req, res) => {
-  let searchRgx = { $regex: req.params.searchKeyword, $options: "i" };
+  let searchRgx = { $regex: req.query.searchKeyword, $options: "i" };
   let searchArray = [
     { name: searchRgx },
     { slug: searchRgx },
@@ -124,6 +127,7 @@ exports.bestSalesProductForGlobal = async (req, res) => {
     { "category.name": searchRgx },
     { "subCategory.name": searchRgx },
     { "subsubcategories.name": searchRgx },
+    { "brands.name": searchRgx },
   ];
 
   let joinStage1 = {
@@ -150,13 +154,22 @@ exports.bestSalesProductForGlobal = async (req, res) => {
       as: "subsubcategories",
     },
   };
-  let result = await listThreeJoinServiceBestSalesForGlobal(
+  let joinStage4 = {
+    $lookup: {
+      from: "brands",
+      localField: "brandId",
+      foreignField: "_id",
+      as: "brands",
+    },
+  };
+  let result = await listFourJoinServiceBestSalesForGlobal(
     req,
     ProductModel,
     searchArray,
     joinStage1,
     joinStage2,
-    joinStage3
+    joinStage3,
+    joinStage4
   );
   return res.status(200).json(result);
 };

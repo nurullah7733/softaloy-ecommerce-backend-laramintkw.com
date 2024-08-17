@@ -1,10 +1,11 @@
-const listThreeJoinServiceBestSalesForGlobal = async (
+const listFourJoinServiceBestSalesForGlobal = async (
   Request,
   DataModel,
   searchArray,
   joinStage1,
   joinStage2,
-  joinStage3
+  joinStage3,
+  joinStage4
 ) => {
   // query search
   let min = Number(Request.query.min);
@@ -13,10 +14,11 @@ const listThreeJoinServiceBestSalesForGlobal = async (
   let category = Request.query.category;
   let subcategory = Request.query.subcategory;
   let subsubcategory = Request.query.subsubcategory;
+  let brand = Request.query.brand;
 
-  let pageNo = Number(Request.params.pageNo);
-  let perPage = Number(Request.params.perPage);
-  let searchKeyword = Request.params.searchKeyword;
+  let pageNo = Number(Request.query.pageNo);
+  let perPage = Number(Request.query.perPage);
+  let searchKeyword = Request.query.searchKeyword;
   let skipRow = (pageNo - 1) * perPage;
 
   // thats dynamic array insert function
@@ -29,6 +31,7 @@ const listThreeJoinServiceBestSalesForGlobal = async (
     joinStage1,
     joinStage2,
     joinStage3,
+    joinStage4,
     {
       $project: {
         description: 0,
@@ -67,6 +70,17 @@ const listThreeJoinServiceBestSalesForGlobal = async (
         $or: [
           {
             "category.name": { $regex: Request.query.category, $options: "i" },
+          },
+        ],
+      },
+    });
+  }
+  if (brand !== undefined) {
+    queryPipeline.insert(-1, {
+      $match: {
+        $or: [
+          {
+            "brands.name": { $regex: Request.query.brand, $options: "i" },
           },
         ],
       },
@@ -117,4 +131,4 @@ const listThreeJoinServiceBestSalesForGlobal = async (
   }
 };
 
-module.exports = listThreeJoinServiceBestSalesForGlobal;
+module.exports = listFourJoinServiceBestSalesForGlobal;
