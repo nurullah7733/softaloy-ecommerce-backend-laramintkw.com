@@ -1,4 +1,5 @@
 let mongoose = require("mongoose");
+const util = require("util");
 const OrderModel = require("../../models/order/orderModel");
 const UserModel = require("../../models/users/userModel");
 const { jsPDF } = require("jspdf");
@@ -21,6 +22,27 @@ const PorductModel = require("../../models/product/productModel");
 
 exports.createOrder = async (req, res) => {
   let reqBody = req.body;
+  // console.log(JSON.stringify(reqBody), "hi");
+
+  if (reqBody["paymentIntent"] && reqBody["paymentIntent"]["amount"]) {
+    reqBody["paymentIntent"]["amount"] = Number(
+      reqBody["paymentIntent"]["amount"]
+    ).toFixed(3);
+  }
+  reqBody.subTotal = Number(reqBody.subTotal).toFixed(3);
+  reqBody.grandTotal = Number(reqBody.grandTotal).toFixed(3);
+  reqBody.shippingCost = Number(reqBody.shippingCost).toFixed(3);
+  reqBody.productsSubTotal = Number(reqBody.productsSubTotal).toFixed(3);
+  reqBody.voucherDiscount = Number(reqBody.voucherDiscount).toFixed(3);
+  reqBody.saveAmount = Number(reqBody.saveAmount).toFixed(3);
+  reqBody.otherCost = Number(reqBody.otherCost).toFixed(3);
+
+  // Similarly for allProducts array
+  reqBody.allProducts.forEach((product) => {
+    product.finalPrice = Number(product.finalPrice).toFixed(3);
+    product.total = Number(product.total).toFixed(3);
+  });
+
   let orderId = uniqid.process();
   reqBody.orderId = orderId;
   reqBody.userId = req.headers.userId;
@@ -49,6 +71,9 @@ exports.createOrder = async (req, res) => {
   }
 
   let result = await createServiceWithIncreaseDecreaseItem(req, OrderModel);
+  console.log(
+    util.inspect(result, "result", { showHidden: false, depth: null })
+  );
 
   // Generate PDF invoice
   if (result?.data?.orderId?.length > 1) {
@@ -150,8 +175,8 @@ exports.createOrder = async (req, res) => {
 
         const productName = productsDetails?.name || "";
         const quantity = item?.customerChoiceProductQuantity || 0;
-        const unitPrice = item?.finalPrice || 0;
-        const total = unitPrice * quantity;
+        const unitPrice = (parseFloat(item?.finalPrice) || 0).toFixed(3);
+        const total = (unitPrice * quantity).toFixed(3);
 
         const formattedUnitPrice = `${unitPrice} KWD`;
         const formattedTotal = `${total} KWD`;
@@ -185,12 +210,12 @@ exports.createOrder = async (req, res) => {
     });
 
     // Add the summary (Subtotal, Taxes, etc.)
-    const subTotal = result.data.subTotal;
-    const saveAmount = result.data.saveAmount;
-    const voucherDiscount = result.data.voucherDiscount;
-    const shippingCost = result.data.shippingCost;
-    const otherCost = result.data.otherCost;
-    const grandTotal = result.data.grandTotal;
+    const subTotal = parseFloat(result.data.subTotal).toFixed(3);
+    const saveAmount = parseFloat(result.data.saveAmount).toFixed(3);
+    const voucherDiscount = parseFloat(result.data.voucherDiscount).toFixed(3);
+    const shippingCost = parseFloat(result.data.shippingCost).toFixed(3);
+    const otherCost = parseFloat(result.data.otherCost).toFixed(3);
+    const grandTotal = parseFloat(result.data.grandTotal).toFixed(3);
 
     const finalY = doc.autoTable.previous.finalY;
     doc.text(`Subtotal: ${subTotal} KWD`, 110, finalY + 10);
