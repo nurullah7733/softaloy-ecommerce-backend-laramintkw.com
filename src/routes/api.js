@@ -212,6 +212,14 @@ const {
   failPayment,
   successPayment,
 } = require("../controllers/myFatoorah/myFatoorahController");
+const {
+  getMainSlidersForMobile,
+  getMainSliderForMobileDetailsById,
+  createMainSliderForMobile,
+  updateMainSliderForMobileWithImg,
+  deleteImgMainSliderForMobile,
+  deleteMainSliderForMobile,
+} = require("../controllers/mainSliderForMobile/mainSliderForMobileController");
 
 // registration
 router.post("/registration", registration);
@@ -776,6 +784,42 @@ router.post(
   verifyAuthMiddleware,
   verifyAdminMiddleware,
   deleteMainSlider
+);
+
+// -------- Main Slider For Mobile -------------------------------------------
+router.get(
+  "/get-all-main-slider-for-mobile/:pageNo/:perPage/:searchKeyword",
+  getMainSlidersForMobile
+);
+router.get(
+  "/get-main-slider-details-for-mobile/:id",
+  getMainSliderForMobileDetailsById
+);
+router.post(
+  "/add-main-slider-for-mobile",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  uploadPhoto.array("images", 10),
+  createMainSliderForMobile
+);
+router.post(
+  "/update-main-slider-for-mobile/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  uploadPhoto.array("images", 10),
+  updateMainSliderForMobileWithImg
+);
+router.post(
+  "/delete-img-main-slider-for-mobile/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  deleteImgMainSliderForMobile
+);
+router.post(
+  "/delete-main-slider-for-mobile/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  deleteMainSliderForMobile
 );
 
 // --------------------------- shipping cost ------------------------------
