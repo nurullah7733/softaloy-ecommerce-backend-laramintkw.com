@@ -9,7 +9,6 @@ const checkAssociateService = require("../../services/common/checkAssociateServi
 const deleteServiceWithImg = require("../../services/common/deleteServiceWithImg");
 const updateServiceWithImg = require("../../services/common/updateServiceWithImg");
 const updateServiceWithDeleteImg = require("../../services/common/updateServiceWithDeleteImg");
-const listThreeJoinServiceBestSalesForGlobal = require("../../services/common/listFourJoinServiceBestSalesForGlobal");
 const getDetailsByIdThreeJoinService = require("../../services/common/getDetailsByIdThreeJoinService");
 const RelatedProductsSearchSercice = require("../../services/common/relatedProductsServices");
 const listFourJoinServiceForGlobal = require("../../services/common/listFourJoinServiceForGlobal");
@@ -17,8 +16,6 @@ const getDetailsByIdForuJoinService = require("../../services/common/getDetailsB
 const listFourJoinServiceBestSalesForGlobal = require("../../services/common/listFourJoinServiceBestSalesForGlobal");
 
 exports.createProduct = async (req, res) => {
-  console.log(req.body, "req.body");
-
   if (req.body.name !== "undefined") {
     req.body.slug = slugify(req.body.name);
   }
@@ -401,6 +398,72 @@ exports.getMegaMenuProductsByCategory = async (req, res) => {
       $sort: { createdAt: -1 },
     });
 
+    return res.status(200).json({ status: "success", data });
+  } catch (error) {
+    return res.status(200).json({ status: "fail", data: error.toString() });
+  }
+};
+
+// set offer by category under all products
+exports.setOfferByCategoryB1G1OrB2G1 = async (req, res) => {
+  const { categoryId, isCategoryBrandB1G1, isCategoryBrandB2G1 } = req.body;
+
+  try {
+    const data = await ProductModel.updateMany(
+      { categoryId: categoryId },
+      {
+        $set: {
+          offers: {
+            isCategoryBrandB1G1: isCategoryBrandB1G1 || false,
+            isCategoryBrandB2G1: isCategoryBrandB2G1 || false,
+          },
+        },
+      }
+    );
+    return res.status(200).json({ status: "success", data });
+  } catch (error) {
+    return res.status(200).json({ status: "fail", data: error.toString() });
+  }
+};
+
+// set offer by brand under all products
+exports.setOfferByBrandB1G1OrB2G1 = async (req, res) => {
+  const { brandId, isCategoryBrandB1G1, isCategoryBrandB2G1 } = req.body;
+
+  try {
+    const data = await ProductModel.updateMany(
+      { brandId: brandId },
+      {
+        $set: {
+          offers: {
+            isCategoryBrandB1G1: isCategoryBrandB1G1 || false,
+            isCategoryBrandB2G1: isCategoryBrandB2G1 || false,
+          },
+        },
+      }
+    );
+    return res.status(200).json({ status: "success", data });
+  } catch (error) {
+    return res.status(200).json({ status: "fail", data: error.toString() });
+  }
+};
+
+// set offer Each product
+exports.setOfferEachProductB1G1OrB2G1 = async (req, res) => {
+  const { productId, isEachProductB1G1, isEachProductB2G1 } = req.body;
+
+  try {
+    const data = await ProductModel.updateMany(
+      { _id: productId },
+      {
+        $set: {
+          offers: {
+            isEachProductB1G1: isEachProductB1G1 || false,
+            isEachProductB2G1: isEachProductB2G1 || false,
+          },
+        },
+      }
+    );
     return res.status(200).json({ status: "success", data });
   } catch (error) {
     return res.status(200).json({ status: "fail", data: error.toString() });

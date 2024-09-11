@@ -1,5 +1,4 @@
 let mongoose = require("mongoose");
-const util = require("util");
 const OrderModel = require("../../models/order/orderModel");
 const UserModel = require("../../models/users/userModel");
 const { jsPDF } = require("jspdf");
@@ -22,7 +21,6 @@ const PorductModel = require("../../models/product/productModel");
 
 exports.createOrder = async (req, res) => {
   let reqBody = req.body;
-  // console.log(JSON.stringify(reqBody), "hi");
 
   if (reqBody["paymentIntent"] && reqBody["paymentIntent"]["amount"]) {
     reqBody["paymentIntent"]["amount"] = Number(
@@ -71,9 +69,6 @@ exports.createOrder = async (req, res) => {
   }
 
   let result = await createServiceWithIncreaseDecreaseItem(req, OrderModel);
-  console.log(
-    util.inspect(result, "result", { showHidden: false, depth: null })
-  );
 
   // Generate PDF invoice
   if (result?.data?.orderId?.length > 1) {

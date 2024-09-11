@@ -15,6 +15,10 @@ const listFourJoinServiceForGlobal = async (
   let subsubcategory = Request.query.subsubcategory;
   let brand = Request.query.brand;
   let discount = Number(Request.query.discount);
+  let each_product_b1g1 = Request.query.each_product_b1g1;
+  let each_product_b2g1 = Request.query.each_product_b2g1;
+  let brand_or_category_b1g1 = Request.query.brand_or_category_b1g1;
+  let brand_or_category_b2g1 = Request.query.brand_or_category_b2g1;
   let inStock = Request.query.inStock;
   let tag = Request.query.tag;
   let sortby = Request.query.sortby;
@@ -122,6 +126,34 @@ const listFourJoinServiceForGlobal = async (
             },
           },
         ],
+      },
+    });
+  }
+  if (each_product_b1g1 !== undefined) {
+    queryPipeline.insert(-1, {
+      $match: {
+        "offers.isEachProductB1G1": each_product_b1g1 === "true", // convert to boolean if necessary
+      },
+    });
+  }
+  if (each_product_b2g1 !== undefined) {
+    queryPipeline.insert(-1, {
+      $match: {
+        "offers.isEachProductB2G1": each_product_b2g1 === "true", // convert to boolean if necessary
+      },
+    });
+  }
+  if (brand_or_category_b1g1 !== undefined) {
+    queryPipeline.insert(-1, {
+      $match: {
+        "offers.isCategoryBrandB1G1": brand_or_category_b1g1 === "true", // convert to boolean if necessary
+      },
+    });
+  }
+  if (brand_or_category_b2g1 !== undefined) {
+    queryPipeline.insert(-1, {
+      $match: {
+        "offers.isCategoryBrandB2G1": brand_or_category_b2g1 === "true", // convert to boolean if necessary
       },
     });
   }

@@ -53,6 +53,9 @@ const {
   bestSalesProductForGlobal,
   relatedProducts,
   getMegaMenuProductsByCategory,
+  setOfferByCategoryB1G1OrB2G1,
+  setOfferByBrandB1G1OrB2G1,
+  setOfferEachProductB1G1OrB2G1,
 } = require("../controllers/products/productController");
 
 const {
@@ -562,6 +565,27 @@ router.get(
   "/getWishList/:pageNo/:perPage/:searchKeyword",
   verifyAuthMiddleware,
   getWishList
+);
+
+// ----------------------------------- Set offers in products ---------------------------
+
+// category wise
+router.post(
+  "/set-offers-by-category-in-products",
+  verifyAuthMiddleware,
+  setOfferByCategoryB1G1OrB2G1
+);
+
+// brand wise
+router.post(
+  "/set-offers-by-brand-in-products",
+  verifyAuthMiddleware,
+  setOfferByBrandB1G1OrB2G1
+);
+router.post(
+  "/set-offers-each-product",
+  verifyAuthMiddleware,
+  setOfferEachProductB1G1OrB2G1
 );
 
 // -------------------------- Coupon code -------------------------------------------------

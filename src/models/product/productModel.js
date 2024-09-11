@@ -84,6 +84,12 @@ var productSchema = mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    offers: {
+      isCategoryBrandB1G1: { type: Boolean, default: false },
+      isCategoryBrandB2G1: { type: Boolean, default: false },
+      isEachProductB1G1: { type: Boolean, default: false },
+      isEachProductB2G1: { type: Boolean, default: false },
+    },
   },
   { versionKey: false, timestamps: true }
 );
