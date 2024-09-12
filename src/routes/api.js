@@ -56,6 +56,10 @@ const {
   setOfferByCategoryB1G1OrB2G1,
   setOfferByBrandB1G1OrB2G1,
   setOfferEachProductB1G1OrB2G1,
+  CheckOfferByCategoryB1G1,
+  CheckOfferByCategoryB2G1,
+  CheckOfferByBrandB1G1,
+  CheckOfferByBrandB2G1,
 } = require("../controllers/products/productController");
 
 const {
@@ -574,6 +578,27 @@ router.post(
   "/set-offers-by-category-in-products",
   verifyAuthMiddleware,
   setOfferByCategoryB1G1OrB2G1
+);
+
+router.get(
+  "/check-offers-by-category-b1g1/:id",
+  verifyAuthMiddleware,
+  CheckOfferByCategoryB1G1
+);
+router.get(
+  "/check-offers-by-category-b2g1/:id",
+  verifyAuthMiddleware,
+  CheckOfferByCategoryB2G1
+);
+router.get(
+  "/check-offers-by-brand-b1g1/:id",
+  verifyAuthMiddleware,
+  CheckOfferByBrandB1G1
+);
+router.get(
+  "/check-offers-by-brand-b2g1/:id",
+  verifyAuthMiddleware,
+  CheckOfferByBrandB2G1
 );
 
 // brand wise

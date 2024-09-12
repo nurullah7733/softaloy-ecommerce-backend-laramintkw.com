@@ -409,18 +409,68 @@ exports.setOfferByCategoryB1G1OrB2G1 = async (req, res) => {
   const { categoryId, isCategoryBrandB1G1, isCategoryBrandB2G1 } = req.body;
 
   try {
-    const data = await ProductModel.updateMany(
-      { categoryId: categoryId },
-      {
-        $set: {
-          offers: {
-            isCategoryBrandB1G1: isCategoryBrandB1G1 || false,
-            isCategoryBrandB2G1: isCategoryBrandB2G1 || false,
+    const data = await ProductModel.find({
+      categoryId: categoryId,
+    });
+
+    if (data.length > 0) {
+      const data = await ProductModel.updateMany(
+        { categoryId: categoryId },
+        {
+          $set: {
+            offers: {
+              isCategoryBrandB1G1: isCategoryBrandB1G1 || false,
+              isCategoryBrandB2G1: isCategoryBrandB2G1 || false,
+              isEachProductB1G1: false,
+              isEachProductB2G1: false,
+            },
           },
-        },
-      }
-    );
-    return res.status(200).json({ status: "success", data });
+        }
+      );
+      return res.status(200).json({ status: "success", data });
+    } else {
+      return res
+        .status(200)
+        .json({ status: "success", data: "No product found" });
+    }
+  } catch (error) {
+    return res.status(200).json({ status: "fail", data: error.toString() });
+  }
+};
+
+exports.CheckOfferByCategoryB1G1 = async (req, res) => {
+  const categoryId = req.params.id;
+
+  try {
+    const data = await ProductModel.find({
+      categoryId: categoryId,
+      "offers.isCategoryBrandB1G1": true,
+    });
+
+    if (data.length > 0) {
+      return res.status(200).json({ status: "success", data: true });
+    } else {
+      return res.status(200).json({ status: "success", data: false });
+    }
+  } catch (error) {
+    return res.status(200).json({ status: "fail", data: error.toString() });
+  }
+};
+
+exports.CheckOfferByCategoryB2G1 = async (req, res) => {
+  const categoryId = req.params.id;
+
+  try {
+    const data = await ProductModel.find({
+      categoryId: categoryId,
+      "offers.isCategoryBrandB2G1": true,
+    });
+
+    if (data.length > 0) {
+      return res.status(200).json({ status: "success", data: true });
+    } else {
+      return res.status(200).json({ status: "success", data: false });
+    }
   } catch (error) {
     return res.status(200).json({ status: "fail", data: error.toString() });
   }
@@ -431,18 +481,67 @@ exports.setOfferByBrandB1G1OrB2G1 = async (req, res) => {
   const { brandId, isCategoryBrandB1G1, isCategoryBrandB2G1 } = req.body;
 
   try {
-    const data = await ProductModel.updateMany(
-      { brandId: brandId },
-      {
-        $set: {
-          offers: {
-            isCategoryBrandB1G1: isCategoryBrandB1G1 || false,
-            isCategoryBrandB2G1: isCategoryBrandB2G1 || false,
+    const data = await ProductModel.find({
+      brandId: brandId,
+    });
+
+    if (data.length > 0) {
+      const data = await ProductModel.updateMany(
+        { brandId: brandId },
+        {
+          $set: {
+            offers: {
+              isCategoryBrandB1G1: isCategoryBrandB1G1 || false,
+              isCategoryBrandB2G1: isCategoryBrandB2G1 || false,
+              isEachProductB1G1: false,
+              isEachProductB2G1: false,
+            },
           },
-        },
-      }
-    );
-    return res.status(200).json({ status: "success", data });
+        }
+      );
+      return res.status(200).json({ status: "success", data });
+    } else {
+      return res
+        .status(200)
+        .json({ status: "success", data: "No product found" });
+    }
+  } catch (error) {
+    return res.status(200).json({ status: "fail", data: error.toString() });
+  }
+};
+
+exports.CheckOfferByBrandB1G1 = async (req, res) => {
+  const brandId = req.params.id;
+
+  try {
+    const data = await ProductModel.find({
+      brandId: brandId,
+      "offers.isCategoryBrandB1G1": true,
+    });
+
+    if (data.length > 0) {
+      return res.status(200).json({ status: "success", data: true });
+    } else {
+      return res.status(200).json({ status: "success", data: false });
+    }
+  } catch (error) {
+    return res.status(200).json({ status: "fail", data: error.toString() });
+  }
+};
+
+exports.CheckOfferByBrandB2G1 = async (req, res) => {
+  const brandId = req.params.id;
+
+  try {
+    const data = await ProductModel.find({
+      brandId: brandId,
+      "offers.isCategoryBrandB2G1": true,
+    });
+    if (data.length > 0) {
+      return res.status(200).json({ status: "success", data: true });
+    } else {
+      return res.status(200).json({ status: "success", data: false });
+    }
   } catch (error) {
     return res.status(200).json({ status: "fail", data: error.toString() });
   }
@@ -460,6 +559,8 @@ exports.setOfferEachProductB1G1OrB2G1 = async (req, res) => {
           offers: {
             isEachProductB1G1: isEachProductB1G1 || false,
             isEachProductB2G1: isEachProductB2G1 || false,
+            isCategoryBrandB1G1: false,
+            isCategoryBrandB2G1: false,
           },
         },
       }

@@ -84,11 +84,34 @@ var productSchema = mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    // offers isEachProductB1G1 & isEachProductB2G1 set function use becouse when we update product to mongoose error conflict error for pass offers={isCategoryBrandB1G1:false, isCategoryBrandB2G1:false}
     offers: {
       isCategoryBrandB1G1: { type: Boolean, default: false },
       isCategoryBrandB2G1: { type: Boolean, default: false },
-      isEachProductB1G1: { type: Boolean, default: false },
-      isEachProductB2G1: { type: Boolean, default: false },
+      isEachProductB1G1: {
+        type: Boolean,
+        default: false,
+        set: function (value) {
+          if (value == "true") {
+            this.set("offers.isCategoryBrandB1G1", false);
+            this.set("offers.isCategoryBrandB2G1", false);
+          }
+          return value;
+        },
+      },
+      isEachProductB2G1: {
+        type: Boolean,
+        default: false,
+        type: Boolean,
+        default: false,
+        set: function (value) {
+          if (value == "true") {
+            this.set("offers.isCategoryBrandB1G1", false);
+            this.set("offers.isCategoryBrandB2G1", false);
+          }
+          return value;
+        },
+      },
     },
   },
   { versionKey: false, timestamps: true }
