@@ -248,7 +248,6 @@ const listFourJoinServiceForGlobal = async (
   try {
     let data;
     data = await DataModel.aggregate(queryPipeline).allowDiskUse();
-
     return { status: "success", data };
   } catch (error) {
     return { status: "fail", data: error.toString() };

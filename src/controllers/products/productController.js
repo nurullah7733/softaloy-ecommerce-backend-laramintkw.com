@@ -89,7 +89,7 @@ exports.listProductForGlobal = async (req, res) => {
   let joinStage3 = {
     $lookup: {
       from: "subsubcategories",
-      localField: "subCategory.subSubCategoryId",
+      localField: "subSubCategoryId",
       foreignField: "_id",
       as: "subsubcategories",
     },
@@ -549,11 +549,11 @@ exports.CheckOfferByBrandB2G1 = async (req, res) => {
 
 // set offer Each product
 exports.setOfferEachProductB1G1OrB2G1 = async (req, res) => {
-  const { productId, isEachProductB1G1, isEachProductB2G1 } = req.body;
+  const { idsToUpdate, isEachProductB1G1, isEachProductB2G1 } = req.body;
 
   try {
     const data = await ProductModel.updateMany(
-      { _id: productId },
+      { _id: { $in: idsToUpdate } },
       {
         $set: {
           offers: {
