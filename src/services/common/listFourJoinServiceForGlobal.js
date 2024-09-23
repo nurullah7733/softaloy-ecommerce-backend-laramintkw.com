@@ -20,6 +20,7 @@ const listFourJoinServiceForGlobal = async (
   let brand_or_category_b1g1 = Request.query.brand_or_category_b1g1;
   let brand_or_category_b2g1 = Request.query.brand_or_category_b2g1;
   let inStock = Request.query.inStock;
+  let lowestQuantity = Request.query.lowestQuantity;
   let tag = Request.query.tag;
   let sortby = Request.query.sortby;
   let remark = Request.query.remark;
@@ -176,6 +177,23 @@ const listFourJoinServiceForGlobal = async (
     queryPipeline.insert(-1, {
       $match: {
         quantity: { $lte: 0 },
+      },
+    });
+  }
+
+  // Filter for products with quantity under 5 or under 10
+  if (lowestQuantity === "under5") {
+    queryPipeline.insert(-1, {
+      $match: {
+        quantity: { $lte: 5 },
+      },
+    });
+  }
+
+  if (lowestQuantity === "under10") {
+    queryPipeline.insert(-1, {
+      $match: {
+        quantity: { $lte: 10 },
       },
     });
   }
