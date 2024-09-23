@@ -14,7 +14,6 @@ const updateServiceWithDeleteImg = async (Request, DataModel) => {
         },
         { $pull: { img: { public_id: imgId } } }
       );
-
       return {
         status: "success",
         fileResult: deleteImg,

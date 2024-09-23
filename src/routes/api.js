@@ -227,6 +227,14 @@ const {
   deleteImgMainSliderForMobile,
   deleteMainSliderForMobile,
 } = require("../controllers/mainSliderForMobile/mainSliderForMobileController");
+const {
+  getPopupNotifications,
+  getPopupNotificationDetailsById,
+  createPopupNotification,
+  updatePopupNotificationWithImg,
+  deleteImgPopupNotification,
+  deletePopupNotification,
+} = require("../controllers/popupNotification/popupNotification");
 
 // registration
 router.post("/registration", registration);
@@ -869,6 +877,44 @@ router.post(
   verifyAuthMiddleware,
   verifyAdminMiddleware,
   deleteMainSliderForMobile
+);
+
+// -------- popup notification -------------------------------------------
+router.get(
+  "/get-popup-notifications/:pageNo/:perPage/:searchKeyword",
+  getPopupNotifications
+);
+router.get(
+  "/get-popup-notification-by-id/:id",
+  getPopupNotificationDetailsById
+);
+router.post(
+  "/add-popup-notification",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  uploadPhoto.array("images", 10),
+  createPopupNotification
+);
+router.post(
+  "/update-popup-notification/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  uploadPhoto.array("images", 10),
+  updatePopupNotificationWithImg
+);
+// delete img only
+router.post(
+  "/delete-img-popup-notification/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  deleteImgPopupNotification
+);
+// delete table with img
+router.post(
+  "/delete-popup-notification/:id",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  deletePopupNotification
 );
 
 // --------------------------- shipping cost ------------------------------
