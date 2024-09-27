@@ -60,6 +60,7 @@ const {
   CheckOfferByCategoryB2G1,
   CheckOfferByBrandB1G1,
   CheckOfferByBrandB2G1,
+  setOfferEachAndDifferentMultipleProductB1G1OrB2G1,
 } = require("../controllers/products/productController");
 
 const {
@@ -585,27 +586,32 @@ router.get(
 router.post(
   "/set-offers-by-category-in-products",
   verifyAuthMiddleware,
+  verifyAdminMiddleware,
   setOfferByCategoryB1G1OrB2G1
 );
 
 router.get(
   "/check-offers-by-category-b1g1/:id",
   verifyAuthMiddleware,
+  verifyAdminMiddleware,
   CheckOfferByCategoryB1G1
 );
 router.get(
   "/check-offers-by-category-b2g1/:id",
   verifyAuthMiddleware,
+  verifyAdminMiddleware,
   CheckOfferByCategoryB2G1
 );
 router.get(
   "/check-offers-by-brand-b1g1/:id",
   verifyAuthMiddleware,
+  verifyAdminMiddleware,
   CheckOfferByBrandB1G1
 );
 router.get(
   "/check-offers-by-brand-b2g1/:id",
   verifyAuthMiddleware,
+  verifyAdminMiddleware,
   CheckOfferByBrandB2G1
 );
 
@@ -613,11 +619,21 @@ router.get(
 router.post(
   "/set-offers-by-brand-in-products",
   verifyAuthMiddleware,
+  verifyAdminMiddleware,
   setOfferByBrandB1G1OrB2G1
 );
+// set each/different  multiple selected products
+router.post(
+  "/set-offers-by-each-and-different-multiple-products",
+  verifyAuthMiddleware,
+  verifyAdminMiddleware,
+  setOfferEachAndDifferentMultipleProductB1G1OrB2G1
+);
+
 router.post(
   "/set-offers-each-product",
   verifyAuthMiddleware,
+  verifyAdminMiddleware,
   setOfferEachProductB1G1OrB2G1
 );
 

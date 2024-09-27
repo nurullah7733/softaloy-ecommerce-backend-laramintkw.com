@@ -548,6 +548,33 @@ exports.CheckOfferByBrandB2G1 = async (req, res) => {
 };
 
 // set offer Each product
+exports.setOfferEachAndDifferentMultipleProductB1G1OrB2G1 = async (
+  req,
+  res
+) => {
+  const { idsToUpdate, isCategoryBrandB1G1, isCategoryBrandB2G1 } = req.body;
+
+  try {
+    const data = await ProductModel.updateMany(
+      { _id: { $in: idsToUpdate } },
+      {
+        $set: {
+          offers: {
+            isEachProductB1G1: false,
+            isEachProductB2G1: false,
+            isCategoryBrandB1G1: isCategoryBrandB1G1 || false,
+            isCategoryBrandB2G1: isCategoryBrandB2G1 || false,
+          },
+        },
+      }
+    );
+    return res.status(200).json({ status: "success", data });
+  } catch (error) {
+    return res.status(200).json({ status: "fail", data: error.toString() });
+  }
+};
+
+// set offer Each product
 exports.setOfferEachProductB1G1OrB2G1 = async (req, res) => {
   const { idsToUpdate, isEachProductB1G1, isEachProductB2G1 } = req.body;
 
